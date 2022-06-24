@@ -1,3 +1,5 @@
+# The social covariates of trance and possession in the Ethnographic Atlas
+
 We want to look at two questions. What sort of social factors have been
 proposed to cooccur with trance and possession phenomena? Using the
 Ethnographic Atlas and the Standard Cross-Cultural Sample, can we get
