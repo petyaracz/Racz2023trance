@@ -1,0 +1,301 @@
+---
+title: Identifying covariate traits of trance and possession phenomena in the Ethnographic
+  Atlas using sparse regression
+author: "Péter Rácz"
+date: "`r format(Sys.Date(),'%e %B, %Y')`"
+output:
+  md_document:
+    variant: markdown_github
+bibliography: bibliography.bib
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE, error = FALSE, message = FALSE, fig.path = 'figures/', fig.width = 8, fig.height = 8)
+```
+
+```{r header}
+setwd('~/Github/Racz2023trance/')
+
+library(tidyverse)
+library(glue)
+library(knitr)
+library(patchwork)
+
+d = read_tsv('data/dat_long.tsv')
+sccs = filter(d, in_sccs)
+```
+
+We want to look at two questions. What sort of social factors have been proposed to cooccur with trance and possession phenomena? Using the Ethnographic Atlas and the Standard Cross-Cultural Sample, can we get more confident that these factors do cooccur with such phenomena across cultures?
+
+## 1. Trance and possession phenomena have societal covariates in the literature
+
+Many people have argued that trance induced by possession is not a random, idiosynchratic pathology but a recurrent psychosocial trait that is at least partly motivated by other social factors. 
+
+High overall social complexity and social rigidity -- the resulting power dynamics -- might translate to possession trance practices. Such practices might serve to express or relay perceived social inflexibility and inequality. This is echoed in the medical anthropology literature (@during2011critical,@dein2012religion) and ties in with broader questions of inequality and mental health (@nguyen2003anthropology). Various causative models have been proposed to account for the emergence of possession trance and, specifically, shamanism in a social setting (@winkelman2015shamanism, @singh2018cultural, @wood2018trance).
+
+Some or most groups can feel stuck in a society. If this makes trance and possession more likely, we should see correlations between measures of social complexity, organisation, and inequality and possession and trance in cross-cultural data. Many such correlations have been proposed by previous work. Here is a list, cross-referenced with @wood2018complexity:
+
+| Relationship                                                                             | Reference                |
+|:-----------------------------------|:-----------------------------------|
+| less complexity $\rightarrow{}$ trance w/o possession                                    | @bourguignon1968         |
+| women's social participation                                                             | @bourguignon1973religion |
+| increased role differentiation and slavery parctices $\rightarrow$ trance and possession | @greenbaum1973           |
+| main mode of subsistence                                                                 | @bourgouignon1977        |
+| increased social participation $\rightarrow{}$ possession                                | @swanson1978             |
+| more complexity $\rightarrow{}$ trance w/ possession                                     | @winkelman1986           |
+| cognatic kinship $\rightarrow{}$ more possession and trance                              | @shaara1992              |
+| decreased social participation $\rightarrow{}$ possession                                | @douglas2004natural      |
+| monotheism                                                                               | @wood2018complexity      |
+
+Several works made the same point or emphasised various aspects of the same relationship. The above table is a bit reductive.
+
+It's an entirely different question whether we can build more ambitious explanatory models that link possession trance and similar practices to e.g. social inequality. This is not a question we really want to deal with here. What we want to know is whether the above descriptions are accurate at all, when given closer scrutiny. We can answer this question by looking at a cross-cultural data set, the Ethnographic Atlas, to see if we can attest in it any of the correlations proposed in the literature. 
+
+## 2. This can be mapped to the Ethnographic Atlas
+
+We find data on trance and possession phenomena and their various proposed covariates in the Ethnographic Atlas [@murdock1967ethnographic] (we use the version made available in the D-Place database, @kirby2016d).
+
+The Atlas records the presence of trance and possession phenomena in a given society, using the following variable (EA112):
+
+```{r }
+d %>% 
+  filter(var_title == 'Trance states', !is.na(code)) %>% 
+  distinct(code, var_description) %>% 
+  arrange(code) %>% 
+  rename(coding = code, Description = var_description) %>% 
+  kable('simple')
+```
+
+This is basically a truth table of whether possession beliefs or trance states are present in a given society, with some causal links between the two (if possession happens it leads to trance, if trance happens it's because of possession, etc). We can think of different groupings (trance phenomena encompass levels 1,3,4,5,6,7, possession phenomena encompass 2,3,4,5,6,7, specifically possession trance covers 3,4,6,7 but not 1,2,5,8).
+
+The eight levels here likely result from a trade-off between description accuracy and generalisability that is present throughout the Atlas. It is unlikely that eight descriptions suffice to capture the plethora of phenomena related to trance and possession. But largely the same is true for all variables in the Atlas. This hasn't stopped people from doing large-scale comparative studies before!
+
+The Atlas lists a set of variables that tie in with the observed covariates in the literature. Here are some relevant-looking ones:
+
+```{r }
+d %>% 
+  filter(var_title != 'Trance states') %>% 
+  distinct(var_id,var_title,var_definition) %>%
+  arrange(var_id) %>% 
+  rename(ID = var_id, Name = var_title, Definition = var_definition) %>% 
+  kable('simple')
+```
+
+The covariates in the literature do not directly map on the variables in the Atlas. The variables are themselves correlated, either because they measure different facets of the same thing (like how complex a society is) or because they were adapted together by socially or geographically close societies (Galton's problem).
+
+## 3. How do we look for correlations between trance and possession and their proposed societal covariates?
+
+We could table how often trance and possession phenomena and their posited covariates pattern together. This is generally a bad idea.
+
+There are eight types of trance and possession phenomena recorded in the Atlas (and we can make up new codings!) and a wide set of possible covariates, all with a number of levels:
+
+```{r }
+vars = d %>% 
+  filter(var_title != 'Trance states') %>% 
+  distinct(var_id,var_title,var_name) %>%
+  arrange(var_id) %>% 
+  group_by(var_id, var_title) %>% 
+  nest() %>% 
+  mutate(levels = map(data, ~ paste(.$var_name, collapse = ', '))) %>% 
+  select(var_id, var_title, levels) %>% 
+  unnest(cols = c(levels)) %>% 
+  rename(ID = var_id, Name = var_title)
+  
+kable(vars, 'simple')
+```
+
+Even if we initially restrict ourselves by a hypothesis, if we keep trying all the possible combinations, we are bound to find something. In addition, data are missing from the Atlas in a non-random manner (e.g. if a society is hard to access, it is harder to provide a population size estimate for it). This makes any catch even more spurious.
+
+We could assess the probability of all eight descriptions in the Atlas together by using a multinomial model. But because data are missing for the covariates and because the covariates are themselves correlated, a single model will be wasteful (losing all the observations for which data are missing) and badly fit (with a lot of colinear predictors in it). We're probably better off building a lot of models and then aggregating over them to find the most important covariates of trance and possession phenomena.
+
+We can do this by using an ensemble learning method. This means that we start with societies with information on trance and possession phenomena. We build a lot of tiny models, using random samples of the data and random subsets of our covariates. Then, we compare these to assess the overall importance of our covariates. Building little models in parallel is called bagging. This is how a random forest works, growing many classification or regression trees and aggregating over the results. One step further is to train little models on the mistakes of the previous little models. This is called [boosting](https://www.ibm.com/cloud/learn/boosting) and usually results in higher training and prediction accuracy.
+
+## 4. Building a boosting model
+
+In this analysis, we will use a gradient boosting model on the data from the Ethnographic Atlas, subsetting it to only include societies in the Standard Cross-Cultural Sample.
+
+Gradient boosting is an ensemble learning method which uses decision trees. A decision tree is a directed tree graph in which each node represents a decision or split based on a predictor variable and each leaf is an individual data point. It can be used to classify leaves by grouping them under different node structures. A gradient boosting algorithm fits such trees in a sequence, training each on the errors of the previous one, minimising overall error. It stops when further iterations do not result in meaningful improvement on model accuracy (according to pre-set criteria) [@cook2016practical,@rhys2020machine,@smith2017decision].
+
+We only fit the model on societies which (a) have information on whether trance and possession phenomena are present (we can't do much with those where we don't know this) and (b) come from the standard cross-cultural sample, which minimises the phylogenetic signal so we don't have to worry about it.
+
+We use hyperparameter tuning to find the best possible model. The outcome of the model is one of the eight descriptions of trance and possession phenomena in the Atlas. The predictors are the possible covariates identified above. The model is fit on a training set of `length(unique(sccs$soc_id))` societies with information on trance and possession in the standard cross-cultural sample.
+
+I'm scarce on the technical details here on purpose, but the analysis can be replicated with the code in this repository.
+
+## 5. Results on the training sample
+
+Here is the distribution of the various descriptions for trance and possession in our training sample. I gave the descriptions shorter names as well, to make things easier later on:
+
+```{r }
+sccs %>% 
+  filter(var_id == 'EA112') %>% 
+  count(var_name,var_description) %>% 
+  rename(name = var_name, description = var_description, count = n) %>% 
+  add_row(name = 'Total', description = '', count = 151) %>% 
+  kable('simple')
+```
+
+We see that only about 10% of societies have no trance or possession phenomena. From the rest, a majority have possession trance in some form.
+
+We compare this with how our model categorises each society. This is our model's confusion matrix. The rows are the actual descriptions, the columns are the predicted descriptions. So a good model would have large counts on the diagonal (where it got the label right) and low values elsewhere (where it didn't). The last two columns give the model's error as a probability (0-1) and as a rate (as n/m).
+
+```{r }
+cm1a = read_tsv('models/conf_matrix11model.tsv')
+cm1a %>% 
+  mutate(original = c(names(cm1a)[!names(cm1a) %in% c('Error','Rate')],'Total')) %>% 
+  relocate(original) %>% 
+  kable('simple', digits = 2)
+```
+
+These results are not very impressive. The model gets some of the larger categories less wrong but it is completely off the mark on the smaller ones. (It gets only one society right in the "no trance or possession" category and all of them wrong in the "possession-only" category!)
+
+Focussing on the relationship between category sizes and model accuracy, we can tell two stories here. The first one is that the model is terrible and it is only likely to do better with the larger categories because of their size (so that the baseline probability of category membership is higher). The second story is largely the same but with some hopeful notes. 
+
+We can say that the way trance and possession phenomena are defined in the Atlas is very fragmentary. It involves at least two external sources of noise. First, for a category like "trance only, no possession", maybe the curators of the Atlas put very disparate psychosocial phenomena into this category, which haven't a lot to do with each other at all. In this case, it is no small wonder that we can't capture this category algorithmically. Maybe it's all arbitrary! 
+
+Second, maybe, even for the larger categories, the boundaries are porous. Maybe it's not entirely clear whether, in a given society, only possession explains trance phenomena. Maybe the fieldworkers missed something! Maybe they disagree on their definitions of things (e.g. some say that a trance phenomenon in a given society is not caused by possession ergo it is not trance at all but something else).
+
+We can work around some of these issues by re-defining our outcome variable. We split our descriptions into two categories, based on whether they capture possession trance or not. This would look like this:
+
+```{r }
+d %>% 
+  filter(var_title == 'Trance states') %>% 
+  distinct(var_description) %>% 
+  rename(description = var_description) %>% 
+  add_column(`this is...` = c('something else','something else','possession trance','possession trance','possession trance','something else','something else','possession trance')) %>% 
+  kable('simple')
+```
+
+Now we have two categories that are roughly the same size and are perhaps less conceptually ambiguous. We refit the model, but this time it only tries to guess whether a society has possession trance or something else (including no trance or possession at all).
+
+## 6. Results on the training sample, part II
+
+We look at the model's confusion matrix:
+
+```{r }
+cm4a = read_tsv('models/conf_matrix41model.tsv')
+cm4a %>% 
+  mutate(original = c(names(cm4a)[!names(cm4a) %in% c('Error','Rate')],'Total')) %>% 
+  relocate(original) %>% 
+  kable('simple', digits = 2)
+```
+
+This is a lot better. Granted, there are only two categories, but the error rate is much lower. This means our model can more or less use the societal covariants to guess whether a society, by the Atlas' own terms, will have possession trance phenomena (1) or not (0).
+
+Having established this, we can ask the model to make predictions for the entire Ethnographic Atlas (where trance and possession data are available, of course) -- including the SCCS subset. Generally, you want to separate the training and test sets in Machine Learning and not do this, but the 'everything except the SCCS' subset of the Atlas would be an odd test set.
+
+Here is the confusion matrix for all `r length(unique(d$soc_id))` societies in the Atlas where trance and possession information are available:
+
+```{r }
+cm4b = read_tsv('models/conf_matrix41test.tsv')
+
+cm4b %>% 
+  add_column(original = c(0,0,0,1,1,0,1,1)) %>% 
+  group_by(original) %>% 
+  summarise(`0` = sum(`0`), `1` = sum(`1`)) %>% 
+  kable('simple')
+
+# d %>% 
+#   filter(var_id == 'EA112') %>% 
+#   mutate(
+#     possession_trance_present = case_when(
+#       code %in% c(3,4,6,7) ~ T,
+#       code %in% c(1,2,5,8) ~ F
+#         )
+#   ) %>% 
+#   count(possession_trance_present) %>% 
+#   kable('simple')
+```
+
+This is much worse than the training data only but that is at least partly because the model is ignorant of the phylogenetic signal which might result in patterns that are unexpected from a purely correlational point of view. And it is still not terrible! It gets 468/`r length(unique(d$soc_id))` societies right. There are 281 versus 377 societies in the data with and without possession trance. If it assumed that no societies had possession trance, it would get 377 data right, and 468 is considerably larger number than that. This means the model is doing something right.
+
+Now that we established that the model does find some purchase, we take a look at the variables that were most important in predicting the presence of possession trance in a given society. I will only show societal covariants with a high enough importance:
+
+
+```{r }
+varimp4 = read_tsv('models/varimp41.tsv')
+vars2 = varimp4 %>% 
+  filter(relative_importance > 15) %>%
+  mutate(ID = str_extract(variable, '^EA...')) %>% 
+  left_join(vars, by = "ID") %>% 
+  select(ID, Name, relative_importance)
+  
+vars2 %>% kable(digits = 2, 'simple')
+```
+
+What do we see? The five most important driving factors are the prevalence of slavery, family complexity, the complexity of class structure, premarital norms for women, and settlement patterns. Various aspects of social complexity and filial and consanguineal organisation also make the list. We can cross-reference this with our first table, with pointers in the literature. We add a column indicating whether the Atlas seems to support each specific claim. (This we do in a very haphazard manner!)
+
+| Relationship|Reference|Our model|
+|:-|:-|:-|
+|less complexity$\rightarrow{}$trance w/o possession|@bourguignon1968|not directly, but more complexity means possession trance is more likely|
+|women's social participation|@bourguignon1973religion|not directly, but premarital sexual norms can be a proxy|
+|increased role differentiation and slavery practices$\rightarrow$trance and possession|@greenbaum1973|slavery, social and class complexity are relevant|
+|main mode of subsistence|@bourgouignon1977|not really|
+|increased social participation$\rightarrow{}$possession|@swanson1978|indirectly, through domestic and social complexity|
+|more complexity$\rightarrow{}$trance w/ possession|@winkelman1986|yes, see above|
+|cognatic kinship$\rightarrow{}$more possession and trance|@shaara1992|not directly, but family and kinship seems to do something|
+|decreased social participation$\rightarrow{}$possession|@douglas2004natural|yes, see above|
+|monotheism|@wood2018complexity|absolutely, the variable is right there|
+
+At this point, we can say, okay, the model says that these various societal covariates are meaningful in the Atlas. But the direction of the individual relationships is not clear. If our analysis finds that increased prevalence of slavery makes possession trance less likely, it's clearly at odds with the existing literature and probably doesn't make sense.
+
+## 7. Making sense: a figure
+
+The figure below shows the proportion of societies with possession trance (dark blue) and without (light blue) across the ordered levels of the predictors that the model thinks are important. They come in order of how important they are, according to the model; prevalence of slavery, then family organisation, and so on. The predictor levels are ordered according to coding and generally go from less prevalent (top) to more prevalent (bottom):
+
+```{r fig.width=10,fig.height=15}
+d_out = d %>% 
+  filter(var_id == 'EA112') %>% 
+  mutate(
+    possession_trance_present = case_when(
+      code %in% c(3,4,6,7) ~ 'present',
+      code %in% c(1,2,5,8) ~ 'absent'
+        )
+      ) %>% 
+  select(soc_id,possession_trance_present)
+
+d_in = d %>%
+  filter(var_title %in% vars2$Name, !is.na(code)) %>% 
+  mutate(
+    predictor = fct_reorder(var_name, -as.double(recoded_value)),
+    var_title = fct_relevel(var_title, vars2$Name)
+    ) %>% 
+  select(soc_id,var_definition,var_title,predictor)
+
+d_vis = inner_join(d_in,d_out, by = 'soc_id')
+
+plots = d_vis %>%
+  count(var_title,predictor,possession_trance_present) %>% 
+  # pivot_wider(names_from = possession_trance_present, values_from = n, values_fill = 0) %>% 
+  # mutate(log_odds_pt = log((`TRUE` + 1) / (`FALSE` + 1)) ) %>% 
+  group_by(var_title) %>% 
+  nest() %>% 
+  mutate(
+    plot = map2(var_title, data, ~ ggplot(.y, aes(predictor,n,fill = possession_trance_present)) +
+                  geom_col(position = 'dodge') +
+                  theme_bw() +
+                  theme(axis.title=element_blank()) +
+                  guides(fill = 'none') +
+                  scale_fill_brewer(palette = "Paired") +
+                  ggtitle(str_wrap(.x, width = 25)) +
+                  coord_flip()
+                 )
+  ) %>% 
+  pull(plot)
+  
+wrap_plots(plots, ncol = 2) + plot_annotation(caption = 'Dark blue: possession trance present. Light blue: absent.')
+```
+
+For the most important variables, we see a clear correllation between the presence of possession trance and the variable scaling up. Societies in which slavery is more prevalent have more possession trance than those where it is less prevalent. Same is true for societies with more complex family structures, more social complexity, more complex settlement patterns, and larger settlements.
+
+The societal variables that do not, strictly speaking, measure social organisation are less obvious. Apparently cousin marriage is good for possession trance, and so is having a lot of words for your various cousins. (We might suspect the latter is here because it is heavily correlated with the former.) Active, moral high gods are bad for possession trance. Prohibitions on pre-married sexual behaviour for women go with more prevalent possession trance, but this pattern is rather variable.
+
+## 8. Summary
+
+We can predict some types of trance and possession phenomena in the SCCS subset of the EA. Not all of them. Some of the important co-variates are the ones mentioned by earlier work and the direction of the relationships corroborates the literature.
+
+Human society is complicated and cross-cultural data have very low resolution. In this sense, we'd be very suspect of a model that would be too accurate of predicting possession trance from societal covariates. It cannot replace fieldwork and more complex explanatory models either. What it can do is provide an extra leg for such explanatory work, which is broadly the recognised ambition of cross-cultural comparative work in evolutionary anthropology.
+
+Our approach is statistically strict, so the fact that it still shows some accuracy is definitely promising for the validity of the connections drawn by previous work on trance and possession phenomena in particular and large cross-cultural comparisons in general.
+
+## References
