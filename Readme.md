@@ -204,7 +204,7 @@ We use hyperparameter tuning to find the best possible model. The
 outcome of the model is one of the eight descriptions of trance and
 possession phenomena in the Atlas. The predictors are the possible
 covariates identified above. The model is fit on a training set of
-`length(unique(sccs$soc_id))` societies with information on trance and
+151 societies with information on trance and
 possession in the standard cross-cultural sample.
 
 I’m scarce on the technical details here on purpose, but the analysis
