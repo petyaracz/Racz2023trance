@@ -12,7 +12,7 @@ Many people have argued that trance induced by possession is not a
 random, idiosynchratic pathology but a recurrent psychosocial trait that
 is at least partly motivated by other social factors.
 
-High overall social complexity and social rigidity – the resulting power
+High overall social complexity and social rigidity – and the resulting power
 dynamics – might translate to possession trance practices. Such
 practices might serve to express or relay perceived social inflexibility
 and inequality. This is echoed in the medical anthropology literature
