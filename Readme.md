@@ -1,13 +1,13 @@
 We want to look at two questions. What sort of social factors have been
-proposed to cooccur with trance and possession phenomena? Using the
+proposed to co-occur with trance and possession phenomena? Using the
 Ethnographic Atlas and the Standard Cross-Cultural Sample, can we get
-more confident that these factors do cooccur with such phenomena across
+more confident that these factors do co-occur with such phenomena across
 cultures?
 
 ## 1. Trance and possession phenomena have societal covariates in the literature
 
 Many people have argued that trance induced by possession is not a
-random, idiosynchratic pathology but a recurrent psychosocial trait that
+random, idiosyncratic pathology but a recurrent psycho-social trait that
 is at least partly motivated by other social factors.
 
 High overall social complexity and social rigidity – the resulting power
@@ -40,22 +40,18 @@ Stockly (2018):
 | monotheism                                                                   | C. P. Wood and Stockly (2018) |
 
 Several works made the same point or emphasised various aspects of the
-same relationship. The above table is a bit reductive.
-
-It’s an entirely different question whether we can build more ambitious
-explanatory models that link possession trance and similar practices to
-e.g. social inequality. This is not a question we really want to deal
-with here. What we want to know is whether the above descriptions are
-accurate at all, when given closer scrutiny. We can answer this question
-by looking at a cross-cultural data set, the Ethnographic Atlas, to see
-if we can attest in it any of the correlations proposed in the
-literature.
+same relationship. The above table is somewhat reductive.
 
 ## 2. This can be mapped to the Ethnographic Atlas
 
-We find data on trance and possession phenomena and their various
-proposed covariates in the Ethnographic Atlas (Murdock 1967) (we use the
-version made available in the D-Place database, Kirby et al. (2016)).
+The use of cross-cultural typological data in general and the
+Ethnographic Atlas in particular has precedents. Bourguignon (1968),
+Bourguignon (1973), and Greenbaum (1973) use the Ethnographic Atlas to
+look for correlates of trance and possession trance. C. P. Wood and
+Stockly (2018), Shaara (1992), M. J. Winkelman (1986), and Douglas
+(2004) build on this research by specifying and compiling their own data
+sets. The present paper uses the Ethnographic Atlas as made available in
+the D-Place database, Kirby et al. (2016).
 
 The Atlas records the presence of trance and possession phenomena in a
 given society, using the following variable (EA112):
@@ -79,15 +75,11 @@ it’s because of possession, etc). We can think of different groupings
 encompass 2,3,4,5,6,7, specifically possession trance covers 3,4,6,7 but
 not 1,2,5,8).
 
-The eight levels here likely result from a trade-off between description
-accuracy and generalisability that is present throughout the Atlas. It
-is unlikely that eight descriptions suffice to capture the plethora of
-phenomena related to trance and possession. But largely the same is true
-for all variables in the Atlas. This hasn’t stopped people from doing
-large-scale comparative studies before!
-
 The Atlas lists a set of variables that tie in with the observed
-covariates in the literature. Here are some relevant-looking ones:
+covariates in the literature. These are either taken literally from
+Bourguignon (1968), Bourguignon (1973), and Greenbaum (1973) or adapt
+variables used by C. P. Wood and Stockly (2018), Shaara (1992), M. J.
+Winkelman (1986), and Douglas (2004).
 
 | ID    | Name                                            | Definition                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
 |:------|:------------------------------------------------|:--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
@@ -103,28 +95,22 @@ covariates in the literature. Here are some relevant-looking ones:
 | EA034 | Religion: high gods                             | The range of beliefs in high gods. A high god is defined, following Swanson, as a spiritual being who is believed to have created all reality and/or to be its ultimate governor, even if his sole act was to create other spirits who, in turn, created or control the natural world.                                                                                                                                                                                                                                                                                                                                                                                          |
 | EA042 | Subsistence economy: dominant activity          | Dominant mode of subsistence (note: not in original EA; derived from other variables on subsistence and type of agriculture).                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
 | EA043 | Descent: major type                             | Major mode of descent (note: not in original EA; derived from variables describing patrilineal and matrilineal kin groups EA017, EA019 and EA021).                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                              |
+| EA053 | Sex differences: animal husbandry               | Specialization by sex in animal husbandry.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
+| EA054 | Sex differences: agriculture                    | Specialization by sex in agriculture.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
 | EA066 | Class differentiation: primary                  | The degree and type of class differentiation, excluding purely political and religious statuses. See also ““Class differentiation: secondary,”” as some societies exhibit important features of two different types of class differentation.                                                                                                                                                                                                                                                                                                                                                                                                                                    |
 | EA068 | Caste differentiation: primary                  | The degree and type of caste differentiation. See also ““Caste differentiation: secondary,”” as some societies exhibit important features of two different types of caste differentation.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
 | EA070 | Slavery: type                                   | The forms and prevalence of slave status, treated quite independently of both class and caste status.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           |
 | EA072 | Political succession                            | Rules of succession applying to the office of local headman (or a close equivalent), without reference to rules of succession prevailing on higher levels of political integration.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
+| EA073 | Political succession: hereditary succession     | Rules of succession applying to the office of local headman (or a close equivalent), without reference to rules of succession prevailing on higher levels of political integration.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                             |
 | EA074 | Inheritance rule for real property (land)       | The rule or practice governing the disposition or transmission of a man’s property in land (exclusive of any dower right of his widow). \[Note that Murdock (1963a) warned that the codes for this variable had ““proved inadequate and in serious need of revision,”” and that the coded data ““should consequently be used only with circumspection””\].                                                                                                                                                                                                                                                                                                                      |
 | EA078 | Norms of premarital sexual behavior of girls    | Prevailing standards of sex behavior for unmarried women.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       |
 | EA113 | Societal rigidity                               | Degree of rigidity in social structures. Considers stratification of society, whether status distinctions are earned or ascribed, degree of hierarchy of political system, extent to which residence and group membership are fixed, centralization of authority, flexibility of religious rites.                                                                                                                                                                                                                                                                                                                                                                               |
 
-The covariates in the literature do not directly map on the variables in
-the Atlas. The variables are themselves correlated, either because they
-measure different facets of the same thing (like how complex a society
-is) or because they were adapted together by socially or geographically
-close societies (Galton’s problem).
-
 ## 3. How do we look for correlations between trance and possession and their proposed societal covariates?
 
-We could table how often trance and possession phenomena and their
-posited covariates pattern together. This is generally a bad idea.
-
 There are eight types of trance and possession phenomena recorded in the
-Atlas (and we can make up new codings!) and a wide set of possible
-covariates, all with a number of levels:
+Atlas and a wide set of possible covariates, all with a number of
+levels.
 
 | ID    | Name                                            | levels                                                                                                                                                                                                                      |
 |:------|:------------------------------------------------|:----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
@@ -140,41 +126,40 @@ covariates, all with a number of levels:
 | EA034 | Religion: high gods                             | Active, but not supporting morality, Absent, Missing data, Otiose, Active, supporting morality                                                                                                                              |
 | EA042 | Subsistence economy: dominant activity          | Gathering, Hunting, Pastoralism, Extensive agriculture, Two or more sources, Intensive agriculture, Agriculture, type unknown, Fishing                                                                                      |
 | EA043 | Descent: major type                             | Bilateral, Patrilineal, Duolateral, Quasi-lineages, Mixed, Matrilineal, Ambilineal, Missing data                                                                                                                            |
+| EA053 | Sex differences: animal husbandry               | Activity is absent, Differentiated but equal, Missing data, Males alone, Equal participation, Both, males more, Females alone, Both, females more                                                                           |
+| EA054 | Sex differences: agriculture                    | Activity is absent, Missing data, Both, females more, Differentiated but equal, Equal participation, Females alone, Both, males more, Males alone                                                                           |
 | EA066 | Class differentiation: primary                  | Absence of distinctions, Wealth distinctions, Dual stratification, Elite stratification, Missing data, Complex stratification                                                                                               |
 | EA068 | Caste differentiation: primary                  | Absence of distinctions, Ethnic stratification, Missing data, Despised occupation groups, Complex caste stratification                                                                                                      |
 | EA070 | Slavery: type                                   | Absence of slavery, Slavery, nonhereditary, Slavery, hereditary, Slavery, no info on heritability, Missing data                                                                                                             |
 | EA072 | Political succession                            | Patrilineal heir, Nonhered: inf. consensus, Absence of office, Missing data, Nonhered: appointed by auth., Matrilineal heir, Nonhered: seniority, Nonhered: election, Nonhered: influence                                   |
+| EA073 | Political succession: hereditary succession     | Son, Nonhereditary, Absence of office, Missing data, Patrilineal heir, Sister’s son, Matrilineal heir                                                                                                                       |
 | EA074 | Inheritance rule for real property (land)       | No inher. of real property, Patrilineal by sons, Missing data, Matrilineal by sister’s sons, Matrilineal by heirs, Patrilineal by heirs, Children, less for daughters, Children                                             |
 | EA078 | Norms of premarital sexual behavior of girls    | Precluded by early marriage, Missing data, Permitted, sanction if pregnancy, Permitted, no sanctions, Prohibited but weakly sanctioned, Prohibited, strongly sanctioned, Trial marriage                                     |
 | EA113 | Societal rigidity                               | Flexible, Missing data, Rigid                                                                                                                                                                                               |
 
-Even if we initially restrict ourselves by a hypothesis, if we keep
-trying all the possible combinations, we are bound to find something. In
-addition, data are missing from the Atlas in a non-random manner
-(e.g. if a society is hard to access, it is harder to provide a
-population size estimate for it). This makes any catch even more
-spurious.
+The data are challenging in two ways. The variables are themselves
+correlated, either because they measure different facets of the same
+thing (like how complex a society is) or because they were adapted
+together by socially or geographically close societies (Galton’s
+problem). In addition, data are missing from the Atlas in a non-random
+manner (e.g. if a society is hard to access, it is harder to provide a
+population size estimate for it).
 
-We could assess the probability of all eight descriptions in the Atlas
-together by using a multinomial model. But because data are missing for
-the covariates and because the covariates are themselves correlated, a
-single model will be wasteful (losing all the observations for which
-data are missing) and badly fit (with a lot of colinear predictors in
-it). We’re probably better off building a lot of models and then
-aggregating over them to find the most important covariates of trance
-and possession phenomena.
+We can account for Galton’s problem (geographic and cultural
+co-variation) by restricting our initial data to societies in the
+Standard Cross-Cultural Sample.
 
-We can do this by using an ensemble learning method. This means that we
-start with societies with information on trance and possession
-phenomena. We build a lot of tiny models, using random samples of the
-data and random subsets of our covariates. Then, we compare these to
-assess the overall importance of our covariates. Building little models
-in parallel is called bagging. This is how a random forest works,
-growing many classification or regression trees and aggregating over the
-results. One step further is to train little models on the mistakes of
-the previous little models. This is called
-[boosting](https://www.ibm.com/cloud/learn/boosting) and usually results
-in higher training and prediction accuracy.
+The remaining co-variation and the non-random patterns of missing data
+recommends an ensemble learning method. This starts with societies with
+information on trance and possession phenomena and builds a lot of tiny
+models, using random samples of the data and random subsets of the
+covariates. Then, we compare these models to assess the overall
+importance of our covariates. Building little models in parallel is
+called bagging. This is how a random forest works, growing many
+classification or regression trees and aggregating over the results. One
+step further is to train models on the mistakes of the previous models.
+This is called [boosting](https://www.ibm.com/cloud/learn/boosting) and
+usually results in higher training and prediction accuracy.
 
 ## 4. Building a boosting model
 
@@ -193,26 +178,27 @@ iterations do not result in meaningful improvement on model accuracy
 (according to pre-set criteria) Smith (2017).
 
 We only fit the model on societies which (a) have information on whether
-trance and possession phenomena are present (we can’t do much with those
-where we don’t know this) and (b) come from the standard cross-cultural
-sample, which minimises the phylogenetic signal so we don’t have to
-worry about it.
+trance and possession phenomena are present and (b) come from the
+standard cross-cultural sample.
 
-We use hyperparameter tuning to find the best possible model. The
-outcome of the model is one of the eight descriptions of trance and
-possession phenomena in the Atlas. The predictors are the possible
-covariates identified above. The model is fit on a training set of
-`length(unique(sccs$soc_id))` societies with information on trance and
-possession in the standard cross-cultural sample.
+Following Bourguignon (1968), we reduce the complexity of the outcome
+variable to two levels: whether a society has possession trance or not.
+The predictors are the possible covariates identified above. Some
+predictors, like `EA032` (Jurisdictional hierarchy of local community)
+or `EA113` can be construed to follow a scale. These are input as
+ordered factors. Others, like `EA053` (Sex differences in animal
+husbandry) or `EA043` (Major type of descent) can be carved up into
+categories: These are one-hot encoded. For details, see the helper file.
 
-I’m scarce on the technical details here on purpose, but the analysis
-can be replicated with the code in this repository.
+We use hyperparameter tuning to find the best possible model. The model
+is fit on a training set of `length(unique(sccs$soc_id))` societies with
+information on trance and possession in the standard cross-cultural
+sample.
 
 ## 5. Results on the training sample
 
 Here is the distribution of the various descriptions for trance and
-possession in our training sample. I gave the descriptions shorter names
-as well, to make things easier later on:
+possession in our training sample.
 
 | name                                             | description                                                                                                                                                                                                                                    | count |
 |:-------------------------------------------------|:-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|------:|
@@ -228,161 +214,78 @@ as well, to make things easier later on:
 
 We see that only about 10% of societies have no trance or possession
 phenomena. From the rest, a majority have possession trance in some
-form.
+form. Following Bourguignon (1968) we can reduce this to a binary: 81
+societies have possession trance, 70 have other forms of trance and
+possessior or show neither.
 
-We compare this with how our model categorises each society. This is our
-model’s confusion matrix. The rows are the actual descriptions, the
-columns are the predicted descriptions. So a good model would have large
-counts on the diagonal (where it got the label right) and low values
-elsewhere (where it didn’t). The last two columns give the model’s error
-as a probability (0-1) and as a rate (as n/m).
+| possession_trance | count |
+|:------------------|------:|
+| possession trance |    71 |
+| other             |    80 |
 
-| original                                         | No trance or possession | Possession | T and P, but T not due to P | T due to P only; P causes T only | T due to P only; P explains T and others | Trance, no possession | Two T states, one due to P; P expl. T and others | Two T states, one due to P; P explains T only | Error | Rate     |
-|:-------------------------------------------------|------------------------:|-----------:|----------------------------:|---------------------------------:|-----------------------------------------:|----------------------:|-------------------------------------------------:|----------------------------------------------:|------:|:---------|
-| No trance or possession                          |                       1 |          0 |                           3 |                                0 |                                        2 |                     4 |                                                8 |                                             0 |  0.94 | 17 / 18  |
-| Possession                                       |                       1 |          0 |                           1 |                                0 |                                        1 |                     1 |                                                5 |                                             0 |  1.00 | 9 / 9    |
-| T and P, but T not due to P                      |                       0 |          0 |                          16 |                                0 |                                        2 |                     3 |                                                6 |                                             0 |  0.41 | 11 / 27  |
-| T due to P only; P causes T only                 |                       0 |          0 |                           1 |                                0 |                                        2 |                     2 |                                                5 |                                             0 |  1.00 | 10 / 10  |
-| T due to P only; P explains T and others         |                       0 |          0 |                           2 |                                0 |                                       19 |                     1 |                                                3 |                                             0 |  0.24 | 6 / 25   |
-| Trance, no possession                            |                       0 |          0 |                           5 |                                0 |                                        1 |                    15 |                                                5 |                                             0 |  0.42 | 11 / 26  |
-| Two T states, one due to P; P expl. T and others |                       0 |          0 |                           2 |                                0 |                                        3 |                     5 |                                               21 |                                             0 |  0.32 | 10 / 31  |
-| Two T states, one due to P; P explains T only    |                       0 |          0 |                           2 |                                0 |                                        1 |                     1 |                                                1 |                                             0 |  1.00 | 5 / 5    |
-| Total                                            |                       2 |          0 |                          32 |                                0 |                                       31 |                    32 |                                               54 |                                             0 |  0.52 | 79 / 151 |
+We compare this with how our best model categorises each society. This
+is our model’s confusion matrix. `0` is absence of possession trance,
+`1` is presence of possession trance. The rows add up to values in the
+original, the columns are the model’s predictions. The last two columns
+show the error rate. The model’s accuracy on absence of possession
+trance is relatively low, though higher than chance (54 out of 80, p \<
+0.01 using a binomial test with a true p of .529). It is mostly accurate
+capturing the presence of possession trance.
 
-These results are not very impressive. The model gets some of the larger
-categories less wrong but it is completely off the mark on the smaller
-ones. (It gets only one society right in the “no trance or possession”
-category and all of them wrong in the “possession-only” category!)
+| original |   0 |   1 | Error | Rate    |
+|:---------|----:|----:|------:|:--------|
+| 0        |  54 |  26 |  0.32 | =26/80  |
+| 1        |   3 |  68 |  0.04 | =3/71   |
+| Total    |  57 |  94 |  0.19 | =29/151 |
 
-Focussing on the relationship between category sizes and model accuracy,
-we can tell two stories here. The first one is that the model is
-terrible and it is only likely to do better with the larger categories
-because of their size (so that the baseline probability of category
-membership is higher). The second story is largely the same but with
-some hopeful notes.
+The model has an F-measure of 0.82, with a penalty on overgeneralising
+possession trance. Though comparisons are hard to make, this is not
+particularly accurate for a binary categorisation problem. We did expect
+this, though, as it is unlikely that any complex cultural phenomenon
+could be reduced to a small number of cross-cultural predictors.
 
-We can say that the way trance and possession phenomena are defined in
-the Atlas is very fragmentary. It involves at least two external sources
-of noise. First, for a category like “trance only, no possession”, maybe
-the curators of the Atlas put very disparate psychosocial phenomena into
-this category, which haven’t a lot to do with each other at all. In this
-case, it is no small wonder that we can’t capture this category
-algorithmically. Maybe it’s all arbitrary!
+### 6. Results on the EA data
 
-Second, maybe, even for the larger categories, the boundaries are
-porous. Maybe it’s not entirely clear whether, in a given society, only
-possession explains trance phenomena. Maybe the fieldworkers missed
-something! Maybe they disagree on their definitions of things (e.g. some
-say that a trance phenomenon in a given society is not caused by
-possession ergo it is not trance at all but something else).
-
-We can work around some of these issues by re-defining our outcome
-variable. We split our descriptions into two categories, based on
-whether they capture possession trance or not. This would look like
-this:
-
-| description                                                                                                                                                                                                                                    | this is…          |
-|:-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|:------------------|
-| Trance behavior is known to occur, but there is no belief in possession.                                                                                                                                                                       | something else    |
-| No trance states of any kind are known to occur, and there is no belief in possession.                                                                                                                                                         | something else    |
-| Trance behavior is known to occur and is explained as due to possession. There is no possession belief referring to other experiences and there are no trance states with other explanations.                                                  | possession trance |
-| Two types of trance states are known to occur. One which is explained as due to possession and one which is given another type of explanation. In addition to explaining trance, possession belief also refers to one or more other phenomena. | possession trance |
-| Trance explained as due to possession is known to occur, and there are no other trance states, but cases of possession outside of trance are also believed to occur.                                                                           | possession trance |
-| A belief in possession exists.                                                                                                                                                                                                                 | something else    |
-| There is both a trance state and a belief in possession, but this belief refers to phenomena other than trance, which is explained through other categories.                                                                                   | something else    |
-| Trance states of two kinds are known to occur, some of which are explained by possession. No other phenomena are explained by possession.                                                                                                      | possession trance |
-
-Now we have two categories that are roughly the same size and are
-perhaps less conceptually ambiguous. We refit the model, but this time
-it only tries to guess whether a society has possession trance or
-something else (including no trance or possession at all).
-
-## 6. Results on the training sample, part II
-
-We look at the model’s confusion matrix:
-
-| original |   0 |   1 | Error | Rate   |
-|:---------|----:|----:|------:|:-------|
-| 0        |  77 |   3 |  0.04 | =3/80  |
-| 1        |   5 |  66 |  0.07 | =5/71  |
-| Total    |  82 |  69 |  0.05 | =8/151 |
-
-This is a lot better. Granted, there are only two categories, but the
-error rate is much lower. This means our model can more or less use the
-societal covariants to guess whether a society, by the Atlas’ own terms,
-will have possession trance phenomena (1) or not (0).
-
-Having established this, we can ask the model to make predictions for
-the entire Ethnographic Atlas (where trance and possession data are
-available, of course) – including the SCCS subset. Generally, you want
-to separate the training and test sets in Machine Learning and not do
-this, but the ‘everything except the SCCS’ subset of the Atlas would be
-an odd test set.
+We can ask the model to make predictions for the entire Ethnographic
+Atlas (where trance and possession data are available) – including the
+SCCS subset. Generally, you want to separate the training and test sets
+in Machine Learning and not do this, but the ‘everything except the
+SCCS’ subset of the Atlas would be an odd test set.
 
 Here is the confusion matrix for all 658 societies in the Atlas where
 trance and possession information are available:
 
-| original |   0 |   1 |
-|---------:|----:|----:|
-|        0 | 278 |  99 |
-|        1 |  91 | 190 |
+| possession_trance_present |   0 |   1 |
+|--------------------------:|----:|----:|
+|                         0 | 209 | 168 |
+|                         1 |  60 | 221 |
 
-This is much worse than the training data only but that is at least
-partly because the model is ignorant of the phylogenetic signal which
-might result in patterns that are unexpected from a purely correlational
-point of view. And it is still not terrible! It gets 468/658 societies
-right. There are 281 versus 377 societies in the data with and without
-possession trance. If it assumed that no societies had possession
-trance, it would get 377 data right, and 468 is considerably larger
-number than that. This means the model is doing something right.
+The F-measue of this model is 0.66. Accuracy here is much worse than for
+the training data only. That is at least partly because the model is
+ignorant of the phylogenetic signal which might result in patterns that
+are unexpected from a purely correlational point of view. However, the
+model is still more accurate than it would be by chance.
 
-Now that we established that the model does find some purchase, we take
-a look at the variables that were most important in predicting the
-presence of possession trance in a given society. I will only show
-societal covariants with a high enough importance:
+We take a look at the variables that were most important in the model in
+predicting the presence of possession trance in a given society, with a
+cutoff of 10/47.
 
 | ID    | Name                                            | relative_importance |
 |:------|:------------------------------------------------|--------------------:|
-| EA070 | Slavery: type                                   |               78.77 |
-| EA008 | Domestic organization                           |               77.59 |
-| EA066 | Class differentiation: primary                  |               60.98 |
-| EA078 | Norms of premarital sexual behavior of girls    |               54.02 |
-| EA030 | Settlement patterns                             |               49.03 |
-| EA033 | Jurisdictional hierarchy beyond local community |               37.70 |
-| EA034 | Religion: high gods                             |               24.73 |
-| EA023 | Cousin marriages permitted                      |               21.09 |
-| EA031 | Mean size of local communities                  |               18.84 |
-| EA027 | Kin terms for cousins                           |               15.96 |
+| EA070 | Slavery: type                                   |               37.92 |
+| EA008 | Domestic organization                           |               35.20 |
+| EA033 | Jurisdictional hierarchy beyond local community |               25.74 |
+| EA066 | Class differentiation: primary                  |               24.02 |
+| EA078 | Norms of premarital sexual behavior of girls    |               22.24 |
+| EA030 | Settlement patterns                             |               16.59 |
+| EA074 | Inheritance rule for real property (land)       |                8.06 |
+| EA031 | Mean size of local communities                  |                7.60 |
+| EA023 | Cousin marriages permitted                      |                7.35 |
+| EA027 | Kin terms for cousins                           |                5.96 |
 
-What do we see? The five most important driving factors are the
-prevalence of slavery, family complexity, the complexity of class
-structure, premarital norms for women, and settlement patterns. Various
-aspects of social complexity and filial and consanguineal organisation
-also make the list. We can cross-reference this with our first table,
-with pointers in the literature. We add a column indicating whether the
-Atlas seems to support each specific claim. (This we do in a very
-haphazard manner!)
-
-| Relationship                                                               | Reference                     | Our model                                                                |
-|:-----------------------|:-----------------------|:-----------------------|
-| less complexity → trance w/o possession                                    | Bourguignon (1968)            | not directly, but more complexity means possession trance is more likely |
-| women’s social participation                                               | Bourguignon (1973)            | not directly, but premarital sexual norms can be a proxy                 |
-| increased role differentiation and slavery practices→trance and possession | Greenbaum (1973)              | slavery, social and class complexity are relevant                        |
-| main mode of subsistence                                                   | Bourguignon and Evascu (1977) | not really                                                               |
-| increased social participation → possession                                | Swanson (1978)                | indirectly, through domestic and social complexity                       |
-| more complexity → trance w/ possession                                     | M. J. Winkelman (1986)        | yes, see above                                                           |
-| cognatic kinship → more possession and trance                              | Shaara (1992)                 | not directly, but family and kinship seems to do something               |
-| decreased social participation → possession                                | Douglas (2004)                | yes, see above                                                           |
-| monotheism                                                                 | C. P. Wood and Stockly (2018) | absolutely, the variable is right there                                  |
-
-At this point, we can say, okay, the model says that these various
-societal covariates are meaningful in the Atlas. But the direction of
-the individual relationships is not clear. If our analysis finds that
-increased prevalence of slavery makes possession trance less likely,
-it’s clearly at odds with the existing literature and probably doesn’t
-make sense.
-
-## 7. Making sense: a figure
+We now look at the direction of these effects (does e.g. increased
+jurisdictional hierarchy go with more or less prevalent possession
+trance?).
 
 The figure below shows the proportion of societies with possession
 trance (dark blue) and without (light blue) across the ordered levels of
@@ -392,25 +295,41 @@ slavery, then family organisation, and so on. The predictor levels are
 ordered according to coding and generally go from less prevalent (top)
 to more prevalent (bottom):
 
-![](figures/unnamed-chunk-10-1.png)
-
 For the most important variables, we see a clear correllation between
 the presence of possession trance and the variable scaling up. Societies
 in which slavery is more prevalent have more possession trance than
 those where it is less prevalent. Same is true for societies with more
 complex family structures, more social complexity, more complex
-settlement patterns, and larger settlements.
+settlement patterns, and larger settlements. The societal variables that
+do not, strictly speaking, measure social organisation are less obvious.
 
-The societal variables that do not, strictly speaking, measure social
-organisation are less obvious. Apparently cousin marriage is good for
-possession trance, and so is having a lot of words for your various
-cousins. (We might suspect the latter is here because it is heavily
-correlated with the former.) Active, moral high gods are bad for
-possession trance. Prohibitions on pre-married sexual behaviour for
-women go with more prevalent possession trance, but this pattern is
-rather variable.
+![](figures/unnamed-chunk-9-1.png)
 
-## 8. Summary
+## 7. Summary
+
+These results go some way in confirming hypotheses on the cross-cultural
+correlates of possession trance in the literature. Bourguignon (1968)
+explicitly tests the variables of slavery, jurisdictional hierarchy,
+settlement patterns, and kin groups. Shaara (1992) point to a high value
+placed on female virginity at marriage, captured here by norms of
+premarital sexual behaviour for girls. These are all important variables
+in our model. Greenbaum (1973) and Shaara (1992) point to sexual
+division of labour, while C. P. Wood and Stockly (2018) to the role of
+moralising high gods, neither of which is relevant in our model.
+
+This brings us back to the original predictions in the table above.
+
+| Relationship                                                               | Reference                     | Our model                                          |
+|:-----------------------|:-----------------------|:-----------------------|
+| less complexity → trance w/o possession                                    | Bourguignon (1968)            | the same measures of complexity are relevant       |
+| women’s social participation                                               | Bourguignon (1973)            | labour divisions are not relevant                  |
+| increased role differentiation and slavery practices→trance and possession | Greenbaum (1973)              | slavery, social and class complexity are relevant  |
+| main mode of subsistence                                                   | Bourguignon and Evascu (1977) | not relevant                                       |
+| increased social participation → possession                                | Swanson (1978)                | indirectly, through domestic and social complexity |
+| more complexity → trance w/ possession                                     | M. J. Winkelman (1986)        | yes, see above                                     |
+| cognatic kinship → more possession and trance                              | Shaara (1992)                 | not directly, but kinship structure is relevant    |
+| decreased social participation → possession                                | Douglas (2004)                | yes, see above                                     |
+| monotheism                                                                 | C. P. Wood and Stockly (2018) | not relevant in our model                          |
 
 We can predict some types of trance and possession phenomena in the SCCS
 subset of the EA. Not all of them. Some of the important co-variates are
@@ -432,54 +351,26 @@ particular and large cross-cultural comparisons in general.
 
 ## References
 
-<div id="refs" class="references csl-bib-body hanging-indent">
-
-<div id="ref-bourguignon1968" class="csl-entry">
-
 Bourguignon, Erika. 1968. “A Cross-Cultural Study of Dissociational
 States.” Columbus, Ohio: The Ohio State University Research Foundation.
 
-</div>
-
-<div id="ref-bourguignon1973religion" class="csl-entry">
-
 ———. 1973. *Religion, Altered States of Consciousness, and Social
 Change*. The Ohio State University Press.
-
-</div>
-
-<div id="ref-bourgouignon1977" class="csl-entry">
 
 Bourguignon, Erika, and Thomas L. Evascu. 1977. “Altered States of
 Consciousness Within a General Evolutionary Perspective: A Holocultural
 Analysis.” *Cross-Cultural Research* 12: 197–216.
 
-</div>
-
-<div id="ref-cook2016practical" class="csl-entry">
-
 Cook, Darren. 2016. *Practical Machine Learning with H2o: Powerful,
 Scalable Techniques for Deep Learning and AI*. " O’Reilly Media, Inc.".
-
-</div>
-
-<div id="ref-dein2012religion" class="csl-entry">
 
 Dein, Simon, Christopher CH Cook, and Harold Koenig. 2012. “Religion,
 Spirituality, and Mental Health: Current Controversies and Future
 Directions.” *The Journal of Nervous and Mental Disease* 200 (10):
 852–55.
 
-</div>
-
-<div id="ref-douglas2004natural" class="csl-entry">
-
 Douglas, Mary. 2004. *Natural Symbols: Explorations in Cosmology*.
 Routledge.
-
-</div>
-
-<div id="ref-during2011critical" class="csl-entry">
 
 During, Emmanuel H, Fanny M Elahi, Olivier Taieb, Marie-Rose Moro, and
 Thierry Baubet. 2011. “A Critical Review of Dissociative Trance and
@@ -487,104 +378,45 @@ Possession Disorders: Etiological, Diagnostic, Therapeutic, and
 Nosological Issues.” *The Canadian Journal of Psychiatry* 56 (4):
 235–42.
 
-</div>
-
-<div id="ref-greenbaum1973" class="csl-entry">
-
 Greenbaum, Lenora. 1973. “Societal Correlates of Possession Trance in
 Sub-Saharan Africa.” Edited by Erika Bourguignon. *Religion, Altered
 States of Consciousness, and Social Change*, 39–57.
-
-</div>
-
-<div id="ref-kirby2016d" class="csl-entry">
 
 Kirby, Kathryn R, Russell D Gray, Simon J Greenhill, Fiona M Jordan,
 Stephanie Gomes-Ng, Hans-Jörg Bibiko, Damián E Blasi, et al. 2016.
 “D-PLACE: A Global Database of Cultural, Linguistic and Environmental
 Diversity.” *PloS One* 11 (7): e0158391.
 
-</div>
-
-<div id="ref-murdock1967ethnographic" class="csl-entry">
-
-Murdock, George Peter. 1967. “Ethnographic Atlas: A Summary.”
-*Ethnology* 6 (2): 109–236.
-
-</div>
-
-<div id="ref-nguyen2003anthropology" class="csl-entry">
-
 Nguyen, Vinh-Kim, and Karine Peschard. 2003. “Anthropology, Inequality,
 and Disease: A Review.” *Annual Review of Anthropology* 32 (1): 447–74.
 
-</div>
-
-<div id="ref-rhys2020machine" class="csl-entry">
-
 Rhys, Hefin. 2020. *Machine Learning with r, the Tidyverse, and Mlr*.
 Simon; Schuster.
-
-</div>
-
-<div id="ref-shaara1992" class="csl-entry">
 
 Shaara, Lila. 1992. “A Preliminary Analysis of the Relationship Between
 Altered States of Consciousness, Healing, and Social Structure.”
 *American Anthropologist* 94: 145–60.
 
-</div>
-
-<div id="ref-singh2018cultural" class="csl-entry">
-
 Singh, Manvir. 2018. “The Cultural Evolution of Shamanism.” *Behavioral
 and Brain Sciences* 41.
-
-</div>
-
-<div id="ref-smith2017decision" class="csl-entry">
 
 Smith, Chris. 2017. *Decision Trees and Random Forests: A Visual
 Introduction for Beginners*. Blue Windmill Media.
 
-</div>
-
-<div id="ref-swanson1978" class="csl-entry">
-
 Swanson, Guy E. 1978. “Trance and Possession: Studies of Charismatic
 Influence.” *Review of Religious Research* 19: 253–78.
-
-</div>
-
-<div id="ref-winkelman2015shamanism" class="csl-entry">
 
 Winkelman, Michael. 2015. “Shamanism as a Biogenetic Structural Paradigm
 for Humans’ Evolved Social Psychology.” *Psychology of Religion and
 Spirituality* 7 (4): 267.
 
-</div>
-
-<div id="ref-winkelman1986" class="csl-entry">
-
 Winkelman, Michael James. 1986. “Trance States: A Theoretical Model and
 Cross-Cultural Analysis.” *Ethos* 14 (2): 174–203.
-
-</div>
-
-<div id="ref-wood2018complexity" class="csl-entry">
 
 Wood, Connor P, and Kate J Stockly. 2018. “Complexity and Possession:
 Gender and Social Structure in the Variability of Shamanic Traits.”
 *Behav. Brain Sci* 41: E91.
 
-</div>
-
-<div id="ref-wood2018trance" class="csl-entry">
-
 Wood, Connor, Saikou Diallo, Ross Gore, and Christopher J Lynch. 2018.
 “Trance, Dissociation, and Shamanism: A Cross-Cultural Model.” *Journal
 of Cognition and Culture* 18 (5): 508–36.
-
-</div>
-
-</div>
