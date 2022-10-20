@@ -108,10 +108,18 @@ Here is the distribution of the various descriptions for trance and possession i
 trance = sccs %>% 
   filter(var_id == 'EA112') %>% 
   count(var_name,code,var_description) %>% 
-  rename(name = var_name, description = var_description, count = n)
-  
+  rename(name = var_name, description = var_description, count = n) %>% 
+  mutate(
+    possession_trance = case_when(
+      code %in% c(3,4,6,7) ~ 'possession trance',
+      code %in% c(1,2,8,5) ~ 'other'
+    ) %>% 
+      fct_relevel('possession trance')
+  )
+
 trance %>% 
-  select(-code) %>% 
+  select(description,code,name,possession_trance,count) %>%
+  rename(outcome = possession_trance) %>% 
   add_row(name = 'Total', description = '', count = 151) %>% 
   kable('simple')
 ```
@@ -120,13 +128,6 @@ We see that only about 10% of societies have no trance or possession phenomena. 
 
 ```{r }
 trance %>% 
-  mutate(
-    possession_trance = case_when(
-      code %in% c(3,4,6,7) ~ 'possession trance',
-      code %in% c(1,2,8,5) ~ 'other'
-    ) %>% 
-      fct_relevel('possession trance')
-  ) %>% 
   group_by(possession_trance) %>% 
   summarise(count = sum(count)) %>% 
   kable('simple')
