@@ -1,6 +1,6 @@
 ---
 title: Identifying covariate traits of trance and possession phenomena in the Ethnographic
-  Atlas using sparse regression
+  Atlas using boosting and nested regression
 author: "Péter Rácz"
 date: "`r format(Sys.Date(),'%e %B, %Y')`"
 output:
@@ -21,15 +21,16 @@ library(glue)
 library(knitr)
 library(patchwork)
 
-d = read_tsv('data/dat_long.tsv')
-sccs = filter(d, in_sccs)
+ld = read_tsv('data/dat_long.tsv')
+# wd = read_tsv('data/dat_wide.tsv')
+sccs = filter(ld, in_sccs)
 ```
 
-We want to look at two questions. What sort of social factors have been proposed to cooccur with trance and possession phenomena? Using the Ethnographic Atlas and the Standard Cross-Cultural Sample, can we get more confident that these factors do cooccur with such phenomena across cultures?
+We want to look at two questions. What sort of social factors have been proposed to co-occur with trance and possession phenomena? Using the Ethnographic Atlas and the Standard Cross-Cultural Sample, can we get more confident that these factors do co-occur with such phenomena across cultures?
 
 ## 1. Trance and possession phenomena have societal covariates in the literature
 
-Many people have argued that trance induced by possession is not a random, idiosynchratic pathology but a recurrent psychosocial trait that is at least partly motivated by other social factors. 
+Many people have argued that trance induced by possession is not a random, idiosyncratic pathology but a recurrent psycho-social trait that is at least partly motivated by other social factors. 
 
 High overall social complexity and social rigidity -- the resulting power dynamics -- might translate to possession trance practices. Such practices might serve to express or relay perceived social inflexibility and inequality. This is echoed in the medical anthropology literature (@during2011critical,@dein2012religion) and ties in with broader questions of inequality and mental health (@nguyen2003anthropology). Various causative models have been proposed to account for the emergence of possession trance and, specifically, shamanism in a social setting (@winkelman2015shamanism, @singh2018cultural, @wood2018trance).
 
@@ -47,18 +48,16 @@ Some or most groups can feel stuck in a society. If this makes trance and posses
 | decreased social participation $\rightarrow{}$ possession                                | @douglas2004natural      |
 | monotheism                                                                               | @wood2018complexity      |
 
-Several works made the same point or emphasised various aspects of the same relationship. The above table is a bit reductive.
-
-It's an entirely different question whether we can build more ambitious explanatory models that link possession trance and similar practices to e.g. social inequality. This is not a question we really want to deal with here. What we want to know is whether the above descriptions are accurate at all, when given closer scrutiny. We can answer this question by looking at a cross-cultural data set, the Ethnographic Atlas, to see if we can attest in it any of the correlations proposed in the literature. 
+Several works made the same point or emphasised various aspects of the same relationship. The above table is somewhat reductive.
 
 ## 2. This can be mapped to the Ethnographic Atlas
 
-We find data on trance and possession phenomena and their various proposed covariates in the Ethnographic Atlas [@murdock1967ethnographic] (we use the version made available in the D-Place database, @kirby2016d).
+The use of cross-cultural typological data in general and the Ethnographic Atlas in particular has precedents. @bourguignon1968, @bourguignon1973religion, and @greenbaum1973 use the Ethnographic Atlas to look for correlates of trance and possession trance. @wood2018complexity, @shaara1992, @winkelman1986, and @douglas2004natural build on this research by specifying and compiling their own data sets. The present paper uses the Ethnographic Atlas as made available in the D-Place database, @kirby2016d.
 
 The Atlas records the presence of trance and possession phenomena in a given society, using the following variable (EA112):
 
 ```{r }
-d %>% 
+ld %>% 
   filter(var_title == 'Trance states', !is.na(code)) %>% 
   distinct(code, var_description) %>% 
   arrange(code) %>% 
@@ -68,12 +67,10 @@ d %>%
 
 This is basically a truth table of whether possession beliefs or trance states are present in a given society, with some causal links between the two (if possession happens it leads to trance, if trance happens it's because of possession, etc). We can think of different groupings (trance phenomena encompass levels 1,3,4,5,6,7, possession phenomena encompass 2,3,4,5,6,7, specifically possession trance covers 3,4,6,7 but not 1,2,5,8).
 
-The eight levels here likely result from a trade-off between description accuracy and generalisability that is present throughout the Atlas. It is unlikely that eight descriptions suffice to capture the plethora of phenomena related to trance and possession. But largely the same is true for all variables in the Atlas. This hasn't stopped people from doing large-scale comparative studies before!
-
-The Atlas lists a set of variables that tie in with the observed covariates in the literature. Here are some relevant-looking ones:
+The Atlas lists a set of variables that tie in with the observed covariates in the literature. These are either taken literally from @bourguignon1968, @bourguignon1973religion, and @greenbaum1973 or adapt variables used by @wood2018complexity, @shaara1992, @winkelman1986, and @douglas2004natural.
 
 ```{r }
-d %>% 
+ld %>% 
   filter(var_title != 'Trance states') %>% 
   distinct(var_id,var_title,var_definition) %>%
   arrange(var_id) %>% 
@@ -81,16 +78,12 @@ d %>%
   kable('simple')
 ```
 
-The covariates in the literature do not directly map on the variables in the Atlas. The variables are themselves correlated, either because they measure different facets of the same thing (like how complex a society is) or because they were adapted together by socially or geographically close societies (Galton's problem).
-
 ## 3. How do we look for correlations between trance and possession and their proposed societal covariates?
 
-We could table how often trance and possession phenomena and their posited covariates pattern together. This is generally a bad idea.
-
-There are eight types of trance and possession phenomena recorded in the Atlas (and we can make up new codings!) and a wide set of possible covariates, all with a number of levels:
+There are eight types of trance and possession phenomena recorded in the Atlas and a wide set of possible covariates, all with a number of levels.
 
 ```{r }
-vars = d %>% 
+vars = ld %>% 
   filter(var_title != 'Trance states') %>% 
   distinct(var_id,var_title,var_name) %>%
   arrange(var_id) %>% 
@@ -104,11 +97,11 @@ vars = d %>%
 kable(vars, 'simple')
 ```
 
-Even if we initially restrict ourselves by a hypothesis, if we keep trying all the possible combinations, we are bound to find something. In addition, data are missing from the Atlas in a non-random manner (e.g. if a society is hard to access, it is harder to provide a population size estimate for it). This makes any catch even more spurious.
+The data are challenging in two ways. The variables are themselves correlated, either because they measure different facets of the same thing (like how complex a society is) or because they were adapted together by socially or geographically close societies (Galton's problem). In addition, data are missing from the Atlas in a non-random manner (e.g. if a society is hard to access, it is harder to provide a population size estimate for it).
 
-We could assess the probability of all eight descriptions in the Atlas together by using a multinomial model. But because data are missing for the covariates and because the covariates are themselves correlated, a single model will be wasteful (losing all the observations for which data are missing) and badly fit (with a lot of colinear predictors in it). We're probably better off building a lot of models and then aggregating over them to find the most important covariates of trance and possession phenomena.
+We can account for Galton's problem (geographic and cultural co-variation) by restricting our initial data to societies in the Standard Cross-Cultural Sample.
 
-We can do this by using an ensemble learning method. This means that we start with societies with information on trance and possession phenomena. We build a lot of tiny models, using random samples of the data and random subsets of our covariates. Then, we compare these to assess the overall importance of our covariates. Building little models in parallel is called bagging. This is how a random forest works, growing many classification or regression trees and aggregating over the results. One step further is to train little models on the mistakes of the previous little models. This is called [boosting](https://www.ibm.com/cloud/learn/boosting) and usually results in higher training and prediction accuracy.
+The remaining co-variation and the non-random patterns of missing data recommends an ensemble learning method. This starts with societies with information on trance and possession phenomena and builds a lot of tiny models, using random samples of the data and random subsets of the covariates. Then, we compare these models to assess the overall importance of our covariates. Building little models in parallel is called bagging. This is how a random forest works, growing many classification or regression trees and aggregating over the results. One step further is to train models on the mistakes of the previous models. This is called [boosting](https://www.ibm.com/cloud/learn/boosting) and usually results in higher training and prediction accuracy.
 
 ## 4. Building a boosting model
 
@@ -116,11 +109,11 @@ In this analysis, we will use a gradient boosting model on the data from the Eth
 
 Gradient boosting is an ensemble learning method which uses decision trees. A decision tree is a directed tree graph in which each node represents a decision or split based on a predictor variable and each leaf is an individual data point. It can be used to classify leaves by grouping them under different node structures. A gradient boosting algorithm fits such trees in a sequence, training each on the errors of the previous one, minimising overall error. It stops when further iterations do not result in meaningful improvement on model accuracy (according to pre-set criteria) [@cook2016practical,@rhys2020machine,@smith2017decision].
 
-We only fit the model on societies which (a) have information on whether trance and possession phenomena are present (we can't do much with those where we don't know this) and (b) come from the standard cross-cultural sample, which minimises the phylogenetic signal so we don't have to worry about it.
+We only fit the model on societies which (a) have information on whether trance and possession phenomena are present and (b) come from the standard cross-cultural sample.
 
-We use hyperparameter tuning to find the best possible model. The outcome of the model is one of the eight descriptions of trance and possession phenomena in the Atlas. The predictors are the possible covariates identified above. The model is fit on a training set of `length(unique(sccs$soc_id))` societies with information on trance and possession in the standard cross-cultural sample.
+Following @bourguignon1968, we reduce the complexity of the outcome variable to two levels: whether a society has possession trance or not. The predictors are the possible covariates identified above. Some predictors, like `EA032` (Jurisdictional hierarchy of local community) or `EA113` can be construed to follow a scale. These are input as ordered factors. Others, like `EA053` (Sex differences in animal husbandry) or `EA043` (Major type of descent) can be carved up into categories: These are one-hot encoded. For details, see the helper file.
 
-I'm scarce on the technical details here on purpose, but the analysis can be replicated with the code in this repository.
+We use hyperparameter tuning to find the best possible model.  The model is fit on a training set of `length(unique(sccs$soc_id))` societies with information on trance and possession in the standard cross-cultural sample.
 
 ## 5. Results on the training sample
 

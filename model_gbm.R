@@ -44,18 +44,14 @@ d %<>%
   mutate_if(is.character, as.factor) %>% 
   mutate_if(is.logical, as.double)
 
+d$possession_trance_present = as.factor(d$possession_trance_present)
+
 d_sccs = filter(d, in_sccs == 1)
 
 x = names(d)[!names(d) %in% c('soc_id','outcome','EA112_Trance_states','trance_present','possession_present','possession_trance_present','in_sccs')]
-y = 'outcome'
+y = 'possession_trance_present'
 
 # -- gbm -- #
-
-# four gbm models. 
-# i everything
-# ii trance only
-# iii possession only
-# iv possession trance only
 
 h2o.init(nthreads=16)
 
@@ -71,10 +67,6 @@ gbm_params1 = list(
   min_split_improvement = c(1e-3,1e-5)
 )
 
-#
-# i all possible levels
-#
-
 # we do a grid search
 gbm_grid1 = h2o.grid("gbm", 
                      x = x, 
@@ -84,232 +76,52 @@ gbm_grid1 = h2o.grid("gbm",
                      nfolds = 3,
                      ntrees = 100,
                      seed = 1,
-                     distribution = 'multinomial',
+                     distribution = 'bernoulli',
                      categorical_encoding = 'enum', # important
                      stopping_metric = 'logloss',
                      hyper_params = gbm_params1
 )
 
-# save grid
-# h2o.saveGrid(
-#   'models',
-#   'gbm_grid1',
-#   save_params_references = FALSE,
-#   export_cross_validation_predictions = FALSE
-# )
-# gbm_grid = h2o.loadGrid('models/gbm_grid')
+h2o.saveGrid(grid_directory = 'grid', grid_id = 'gbm_grid1')
 
 # pick the best models from grid
 gbm_grid_best1 = h2o.getGrid(grid_id = "gbm_grid1",
-                            sort_by = "logloss",
-                            decreasing = FALSE)
-
-# pick bestest model
-fit11 = h2o.getModel(gbm_grid_best1@model_ids[[1]])
-# pick worst model
-fit12 = h2o.getModel(gbm_grid_best1@model_ids[[384]])
-
-# check stats
-h2o.performance(fit11, xval = TRUE)
-h2o.performance(fit12, xval = TRUE)
-
-# varimp
-varimp11 = as_tibble(h2o.varimp(fit11))
-
-# don't trust the built-in confusion matrix!
-pred11 = bind_cols(d_sccs,as_tibble(h2o.predict(object = fit11, newdata = train)))
-conf_matrix1 = pred11 %>% 
-  select(outcome,predict) %>% 
-  count(outcome,predict) %>% 
-  pivot_wider(names_from = predict, values_from = n, values_fill = 0)
-conf_matrix1b = as_tibble(h2o.confusionMatrix(fit11))
-# these are the same, good.
-
-# predict on "test data"
-pred11b = bind_cols(d,as_tibble(h2o.predict(object = fit11, newdata = trainea)))
-conf_matrix1c = pred11b %>% 
-  select(outcome,predict) %>% 
-  count(outcome,predict) %>% 
-  pivot_wider(names_from = predict, values_from = n, values_fill = 0)
-
-#
-# ii trance only 
-#
-
-train$trance_present = h2o.asfactor(train$trance_present)
-
-# we do a grid search
-gbm_grid2 = h2o.grid("gbm", 
-                    x = x, 
-                    y = 'trance_present',
-                    grid_id = "gbm_grid2",
-                    training_frame = train,
-                    nfolds = 3,
-                    ntrees = 100,
-                    seed = 1,
-                    distribution = 'bernoulli',
-                    categorical_encoding = 'enum', # important
-                    stopping_metric = 'logloss',
-                    hyper_params = gbm_params1
-)
-
-# pick the best models from grid
-gbm_grid_best2 = h2o.getGrid(grid_id = "gbm_grid2",
-                           sort_by = "logloss",
-                           decreasing = FALSE)
-
-# pick bestest model
-fit21 = h2o.getModel(gbm_grid_best2@model_ids[[1]])
-# pick worst model
-fit22 = h2o.getModel(gbm_grid_best2@model_ids[[384]])
-
-# check stats
-h2o.performance(fit21, xval = TRUE)
-h2o.performance(fit22, xval = TRUE)
-
-# varimp
-varimp21 = as_tibble(h2o.varimp(fit21))
-
-# don't trust the built-in confusion matrix!
-pred21 = bind_cols(d_sccs,as_tibble(h2o.predict(object = fit21, newdata = train)))
-conf_matrix2 = pred21 %>% 
-  select(outcome,predict) %>% 
-  count(outcome,predict) %>% 
-  pivot_wider(names_from = predict, values_from = n, values_fill = 0)
-conf_matrix2b = as_tibble(h2o.confusionMatrix(fit21))
-# looks fine 
-
-# predict on "test data"
-pred21b = bind_cols(d,as_tibble(h2o.predict(object = fit21, newdata = trainea)))
-conf_matrix2c = pred21b %>% 
-  select(outcome,predict) %>% 
-  count(outcome,predict) %>% 
-  pivot_wider(names_from = predict, values_from = n, values_fill = 0)
-
-#
-# iii pos only 
-#
-
-train$possession_present = h2o.asfactor(train$possession_present)
-
-# we do a grid search
-gbm_grid3 = h2o.grid("gbm", 
-                     x = x, 
-                     y = 'possession_present',
-                     grid_id = "gbm_grid3",
-                     training_frame = train,
-                     nfolds = 3,
-                     ntrees = 100,
-                     seed = 1,
-                     distribution = 'bernoulli',
-                     categorical_encoding = 'enum', # important
-                     stopping_metric = 'logloss',
-                     hyper_params = gbm_params1
-)
-
-# pick the best models from grid
-gbm_grid_best3 = h2o.getGrid(grid_id = "gbm_grid3",
                              sort_by = "logloss",
                              decreasing = FALSE)
 
 # pick bestest model
-fit31 = h2o.getModel(gbm_grid_best3@model_ids[[1]])
+fit1 = h2o.getModel(gbm_grid_best1@model_ids[[1]])
 # pick worst model
-fit32 = h2o.getModel(gbm_grid_best3@model_ids[[384]])
+fit2 = h2o.getModel(gbm_grid_best1@model_ids[[384]])
 
 # check stats
-h2o.performance(fit31, xval = TRUE)
-h2o.performance(fit32, xval = TRUE)
+h2o.performance(fit1, xval = TRUE)
+h2o.performance(fit2, xval = TRUE)
 
 # varimp
-varimp31 = as_tibble(h2o.varimp(fit31))
+varimp1 = as_tibble(h2o.varimp(fit1))
 
 # don't trust the built-in confusion matrix!
-pred31 = bind_cols(d_sccs,as_tibble(h2o.predict(object = fit31, newdata = train)))
-conf_matrix3 = pred31 %>% 
-  select(outcome,predict) %>% 
-  count(outcome,predict) %>% 
+pred1 = bind_cols(d_sccs,as_tibble(h2o.predict(object = fit1, newdata = train)))
+conf_matrix1 = pred1 %>% 
+  select(possession_trance_present,predict) %>% 
+  count(possession_trance_present,predict) %>% 
   pivot_wider(names_from = predict, values_from = n, values_fill = 0)
-conf_matrix3b = as_tibble(h2o.confusionMatrix(fit31))
+conf_matrix1b = as_tibble(h2o.confusionMatrix(fit1))
 
 # predict on "test data"
-pred31b = bind_cols(d,as_tibble(h2o.predict(object = fit31, newdata = trainea)))
-conf_matrix3c = pred31b %>% 
-  select(outcome,predict) %>% 
-  count(outcome,predict) %>% 
-  pivot_wider(names_from = predict, values_from = n, values_fill = 0)
-
-#
-# iv pos trance
-#
-
-train$possession_trance_present = h2o.asfactor(train$possession_trance_present)
-
-# we do a grid search
-gbm_grid4 = h2o.grid("gbm", 
-                     x = x, 
-                     y = 'possession_trance_present',
-                     grid_id = "gbm_grid4",
-                     training_frame = train,
-                     nfolds = 3,
-                     ntrees = 100,
-                     seed = 1,
-                     distribution = 'bernoulli',
-                     categorical_encoding = 'enum', # important
-                     stopping_metric = 'logloss',
-                     hyper_params = gbm_params1
-)
-
-# pick the best models from grid
-gbm_grid_best4 = h2o.getGrid(grid_id = "gbm_grid4",
-                             sort_by = "logloss",
-                             decreasing = FALSE)
-
-# pick bestest model
-fit41 = h2o.getModel(gbm_grid_best4@model_ids[[1]])
-# pick worst model
-fit42 = h2o.getModel(gbm_grid_best4@model_ids[[384]])
-
-# check stats
-h2o.performance(fit41, xval = TRUE)
-h2o.performance(fit42, xval = TRUE)
-
-# varimp
-varimp41 = as_tibble(h2o.varimp(fit41))
-
-# don't trust the built-in confusion matrix!
-pred41 = bind_cols(d_sccs,as_tibble(h2o.predict(object = fit41, newdata = train)))
-conf_matrix4 = pred41 %>% 
-  select(outcome,predict) %>% 
-  count(outcome,predict) %>% 
-  pivot_wider(names_from = predict, values_from = n, values_fill = 0)
-conf_matrix4b = as_tibble(h2o.confusionMatrix(fit41))
-
-# predict on "test data"
-pred41b = bind_cols(d,as_tibble(h2o.predict(object = fit41, newdata = trainea)))
-conf_matrix4c = pred41b %>% 
-  select(outcome,predict) %>% 
-  count(outcome,predict) %>% 
+pred1b = bind_cols(d,as_tibble(h2o.predict(object = fit1, newdata = trainea)))
+conf_matrix1c = pred1b %>% 
+  select(possession_trance_present,predict) %>% 
+  count(possession_trance_present,predict) %>% 
   pivot_wider(names_from = predict, values_from = n, values_fill = 0)
 
 # -- save everything -- #
 
 # fit11,fit21,fit31,fit41
 # varimp, pred, conf matrix
-map(c(fit11,fit21,fit31,fit41), ~ h2o.saveModel(., 'models'))
-write_tsv(varimp11, 'models/varimp11.tsv')
-write_tsv(varimp21, 'models/varimp21.tsv')
-write_tsv(varimp31, 'models/varimp31.tsv')
-write_tsv(varimp41, 'models/varimp41.tsv')
+h2o.saveModel(fit1, 'models')
+write_tsv(varimp1, 'models/varimp11.tsv')
 write_tsv(conf_matrix1, 'models/conf_matrix11.tsv')
-write_tsv(conf_matrix2, 'models/conf_matrix21.tsv')
-write_tsv(conf_matrix3, 'models/conf_matrix31.tsv')
-write_tsv(conf_matrix4, 'models/conf_matrix41.tsv')
 write_tsv(conf_matrix1b, 'models/conf_matrix11model.tsv')
-write_tsv(conf_matrix2b, 'models/conf_matrix21model.tsv')
-write_tsv(conf_matrix3b, 'models/conf_matrix31model.tsv')
-write_tsv(conf_matrix4b, 'models/conf_matrix41model.tsv')
 write_tsv(conf_matrix1c, 'models/conf_matrix11test.tsv')
-write_tsv(conf_matrix2c, 'models/conf_matrix21test.tsv')
-write_tsv(conf_matrix3c, 'models/conf_matrix31test.tsv')
-write_tsv(conf_matrix4c, 'models/conf_matrix41test.tsv')

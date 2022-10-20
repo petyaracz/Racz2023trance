@@ -1,6 +1,8 @@
 # pulls data in from the DPLACE github repository, filters for trance & possesion analysis, tidies it up, saves it
 # author: pracz
-# date: 22/2/22
+# date: 20/10/22
+
+set.seed(1337)
 
 setwd('~/Github/Racz2023trance/')
 library(tidyverse)
@@ -73,7 +75,7 @@ dat = dat %>%
 # --- filter --- #
 
 # these are the variables of interest for trance and possession
-keep_vars = paste('EA', c("034","012","008","015","023","043","027","031","030","032","033","042","066","068","070","072","074","078","113","112"), sep='')
+keep_vars = paste('EA', c("008","012","015","023","027","030","031","032","033","034","042","043","053","054","066","068","070","072","073","074","078","112","113"), sep='')
 
 # we recode some of these as ordinal variables, others as factors, we leave the rest as is, thereby assuming it is an ordinal variable
 trance_dict = codes %>% 
@@ -103,10 +105,22 @@ trance_dict = codes %>%
         var_id == 'EA042' & code %in% c(4) ~ "pastoralism",
         var_id == 'EA042' & code %in% c(1,2,3) ~ "foraging",
         var_id == 'EA042' & code == 8 ~ 'multiple',
+        var_id == 'EA053' & code %in% c(1,2) ~ 'mostly male',
+        var_id == 'EA053' & code %in% c(5,6) ~ 'mostly female',
+        var_id == 'EA053' & code %in% c(3,4) ~ 'both',
+        var_id == 'EA053' & code %in% c(7,8,9) ~ 'other',
+        var_id == 'EA054' & code %in% c(1,2) ~ 'mostly male',
+        var_id == 'EA054' & code %in% c(5,6) ~ 'mostly female',
+        var_id == 'EA054' & code %in% c(3,4) ~ 'both',
+        var_id == 'EA054' & code %in% c(7,8,9) ~ 'other',
         var_id == 'EA072' & code %in% c(1) ~ 'patrilineal',
         var_id == 'EA072' & code %in% c(2) ~ 'matrilineal',
         var_id == 'EA072' & code %in% c(3,4,5,6,7) ~ 'other',
         var_id == 'EA072' & code %in% c(9) ~ 'absent',
+        var_id == 'EA073' & code %in% c(1,2) ~ 'patrilineal',
+        var_id == 'EA073' & code %in% c(3,4) ~ 'matrilineal',
+        var_id == 'EA073' & code %in% c(5) ~ 'other',
+        var_id == 'EA073' & code %in% c(9) ~ 'absent',
         var_id == 'EA074' & code %in% c(6,7) ~ 'patrilineal',
         var_id == 'EA074' & code %in% c(2,3) ~ 'matrilineal',
         var_id == 'EA074' & code %in% c(4,5) ~ 'other',
@@ -181,11 +195,12 @@ datwo = datw %>%
   map_df(., ~ str_replace(., '^','l_'))
 
 datwc = datw %>% 
-  select(matches('EA(113|012|015|042|043|072|074)'))
+  select(matches('EA(012|015|042|043|053|054|072|073|074|113)'))
 
 # this is a HACK
 datwc = as_tibble(predict(dummyVars(" ~ .", data = datwc), newdata = datwc))
 
+# nice names
 names(datwc) = c(
   "EA113_Societal_rigidity_F",
   "EA113_Societal_rigidity_T",
@@ -202,10 +217,22 @@ names(datwc) = c(
   "EA042_Subsistence_economy_dominant_activity_pastoralism",
   "EA043_Descent_major_type_other",
   "EA043_Descent_major_type_patrilineal",
+  "EA053_Sex_differences_animal_husbandry_both",
+  "EA053_Sex_differences_animal_husbandry_mostly_female",
+  "EA053_Sex_differences_animal_husbandry_mostly_male",     
+  "EA053_Sex_differences_animal_husbandry_other",
+  "EA054_Sex_differences_agriculture_both",     
+  "EA054_Sex_differences_agriculture_mostly_female",
+  "EA054_Sex_differences_agriculture_mostly_male",
+  "EA054_Sex_differences_agriculture_other",
   "EA072_Political_succession_absent",
   "EA072_Political_succession_matrilineal",
   "EA072_Political_succession_other",
   "EA072_Political_succession_patrilineal",
+  "EA073_Political_succession_hereditary_succession_absent",   
+  "EA073_Political_succession_hereditary_succession_matrilineal",
+  "EA073_Political_succession_hereditary_succession_other",
+  "EA073_Political_succession_hereditary_succession_patrilineal",
   "EA074_Inheritance_rule_for_real_property_land_absent",
   "EA074_Inheritance_rule_for_real_property_land_matrilineal",
   "EA074_Inheritance_rule_for_real_property_land_other",
@@ -218,6 +245,21 @@ datw2 = datw %>%
   bind_cols(datwo)
 
 # and since I bound columns with no index I basically check by hand to make sure they line up
+checkDat = function(){
+  rown = sample(nrow(datw2),1)
+  coln = sample(ncol(datw2),1)
+  my_socid = datw2[rown,]$soc_id
+  my_varid = str_extract(names(datw2[,coln]), '^EA...')
+  my_value = datw2[rown,coln]
+  return(c(my_socid,my_varid,my_value))
+}
+
+my_vars = checkDat()
+my_vars
+datl %>% 
+  filter(soc_id == my_vars[1],var_id == my_vars[2]) %>% 
+  select(code,var_title,var_type,var_description)
+# yes okay
 
 # define a few possible outcome codings.
 datw2 = datl %>% 

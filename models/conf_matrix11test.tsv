@@ -1,9 +1,3 @@
-outcome	No trance or possession	T and P,  but T not due to P	T due to P only; P explains T and others	Trance, no possession	Two T states, one due to P; P expl. T and others
-No trance or possession	9	40	14	18	37
-Possession	1	19	7	2	16
-T and P,  but T not due to P	0	43	7	11	18
-T due to P only; P causes T only	2	17	19	9	20
-T due to P only; P explains T and others	2	16	34	4	29
-Trance, no possession	1	60	18	27	29
-Two T states, one due to P; P expl. T and others	1	19	15	10	48
-Two T states, one due to P; P explains T only	1	21	4	4	6
+possession_trance_present	0	1
+0	209	168
+1	60	221
