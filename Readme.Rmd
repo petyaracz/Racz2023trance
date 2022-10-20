@@ -80,22 +80,7 @@ ld %>%
 
 ## 3. How do we look for correlations between trance and possession and their proposed societal covariates?
 
-There are eight types of trance and possession phenomena recorded in the Atlas and a wide set of possible covariates, all with a number of levels.
-
-```{r }
-vars = ld %>% 
-  filter(var_title != 'Trance states') %>% 
-  distinct(var_id,var_title,var_name) %>%
-  arrange(var_id) %>% 
-  group_by(var_id, var_title) %>% 
-  nest() %>% 
-  mutate(levels = map(data, ~ paste(.$var_name, collapse = ', '))) %>% 
-  select(var_id, var_title, levels) %>% 
-  unnest(cols = c(levels)) %>% 
-  rename(ID = var_id, Name = var_title)
-  
-kable(vars, 'simple')
-```
+There are eight types of trance and possession phenomena recorded in the Atlas and a wide set of possible covariates, all with a number of levels (see the Appendix).
 
 The data are challenging in two ways. The variables are themselves correlated, either because they measure different facets of the same thing (like how complex a society is) or because they were adapted together by socially or geographically close societies (Galton's problem). In addition, data are missing from the Atlas in a non-random manner (e.g. if a society is hard to access, it is harder to provide a population size estimate for it).
 
@@ -111,7 +96,7 @@ Gradient boosting is an ensemble learning method which uses decision trees. A de
 
 We only fit the model on societies which (a) have information on whether trance and possession phenomena are present and (b) come from the standard cross-cultural sample.
 
-Following @bourguignon1968, we reduce the complexity of the outcome variable to two levels: whether a society has possession trance or not. The predictors are the possible covariates identified above. Some predictors, like `EA032` (Jurisdictional hierarchy of local community) or `EA113` can be construed to follow a scale. These are input as ordered factors. Others, like `EA053` (Sex differences in animal husbandry) or `EA043` (Major type of descent) can be carved up into categories: These are one-hot encoded. For details, see the helper file.
+Following @bourguignon1968, we reduce the complexity of the outcome variable to two levels: whether a society has possession trance or not. The predictors are the possible covariates identified above. Some predictors, like `EA032` (Jurisdictional hierarchy of local community) or `EA113` can be construed to follow a scale. These are input as ordered factors. Others, like `EA053` (Sex differences in animal husbandry) or `EA043` (Major type of descent) can be carved up into categories: These are one-hot encoded. For details, see the Appendix.
 
 We use hyperparameter tuning to find the best possible model.  The model is fit on a training set of `length(unique(sccs$soc_id))` societies with information on trance and possession in the standard cross-cultural sample.
 
@@ -190,6 +175,17 @@ The F-measue of this model is `r round(f2,2)`. Accuracy here is much worse than 
 We take a look at the variables that were most important in the model in predicting the presence of possession trance in a given society, with a cutoff of 10/47. 
 
 ```{r }
+vars = ld %>% 
+  filter(var_title != 'Trance states') %>% 
+  distinct(var_id,var_title,var_definition,var_name) %>%
+  arrange(var_id) %>% 
+  group_by(var_id, var_title, var_definition) %>% 
+  nest() %>% 
+  mutate(levels = map(data, ~ paste(.$var_name, collapse = ', '))) %>% 
+  select(var_id, var_title, levels) %>% 
+  unnest(cols = c(levels)) %>% 
+  rename(ID = var_id, Name = var_title)
+
 varimp1 = read_tsv('models/varimp11.tsv')
 vars2 = varimp1 %>% 
   slice(1:10) %>% 
@@ -272,5 +268,27 @@ We can predict some types of trance and possession phenomena in the SCCS subset 
 Human society is complicated and cross-cultural data have very low resolution. In this sense, we'd be very suspect of a model that would be too accurate of predicting possession trance from societal covariates. It cannot replace fieldwork and more complex explanatory models either. What it can do is provide an extra leg for such explanatory work, which is broadly the recognised ambition of cross-cultural comparative work in evolutionary anthropology.
 
 Our approach is statistically strict, so the fact that it still shows some accuracy is definitely promising for the validity of the connections drawn by previous work on trance and possession phenomena in particular and large cross-cultural comparisons in general.
+
+## Appendix
+
+### Relevant predictors in the Ethnographic Atlas
+
+A survey of the literature resulted in the following predictors of trance and possession phenomena.
+
+```{r }
+kable(vars, 'simple')
+```
+
+### Recoded values in the Ethnographic Atlas
+
+The recoded values were used in the model for each predictor. Where the recoded values are numeric, the predictor was used as an ordered factor. Where the recoded values are strings, the predictor was one-hot encoded (such that predictor A with levels 1, 2, and 3 was turned into boolean predictors A==2 and A==3).
+
+```{r }
+ld %>% 
+  filter(var_id != 'EA112') %>% 
+  distinct(var_id,var_title,var_description,recoded_value) %>% 
+  arrange(var_id,recoded_value) %>% 
+  kable('simple')
+```
 
 ## References
