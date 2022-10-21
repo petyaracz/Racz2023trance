@@ -9,6 +9,9 @@ output:
 bibliography: bibliography.bib
 ---
 
+# To do: one-hot encoding ended up creating unidentifiable vars (where both values of a col are present) so do something with that.
+
+
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = FALSE, warning = FALSE, error = FALSE, message = FALSE, fig.path = 'figures/', fig.width = 8, fig.height = 8)
 ```
@@ -22,7 +25,7 @@ library(knitr)
 library(patchwork)
 
 ld = read_tsv('data/dat_long.tsv')
-# wd = read_tsv('data/dat_wide.tsv')
+wd = read_tsv('data/dat_wide.tsv')
 sccs = filter(ld, in_sccs)
 ```
 
@@ -38,15 +41,14 @@ Some or most groups can feel stuck in a society. If this makes trance and posses
 
 | Relationship                                                                             | Reference                |
 |:-----------------------------------|:-----------------------------------|
-| less complexity $\rightarrow{}$ trance w/o possession                                    | @bourguignon1968         |
-| women's social participation                                                             | @bourguignon1973religion |
-| increased role differentiation and slavery parctices $\rightarrow$ trance and possession | @greenbaum1973           |
-| main mode of subsistence                                                                 | @bourgouignon1977        |
-| increased social participation $\rightarrow{}$ possession                                | @swanson1978             |
-| more complexity $\rightarrow{}$ trance w/ possession                                     | @winkelman1986           |
-| cognatic kinship $\rightarrow{}$ more possession and trance                              | @shaara1992              |
-| decreased social participation $\rightarrow{}$ possession                                | @douglas2004natural      |
-| monotheism                                                                               | @wood2018complexity      |
+| Social complexity, rigidity, gender role differentiation                                    | @bourguignon1968         |
+| Women's social participation                                                             | @bourguignon1973religion |
+| Slavery, role differentiation, and structure differentiation | @greenbaum1973           |
+| Increased social participation                                | @swanson1978             |
+| Social complexity                                     | @winkelman1986           |
+| Social flexibility, cognatic kinship                              | @shaara1992              |
+| Decreased social participation                                | @douglas2004natural      |
+| Social rigidity, monotheism                                                                               | @wood2018complexity      |
 
 Several works made the same point or emphasised various aspects of the same relationship. The above table is somewhat reductive.
 
@@ -96,7 +98,18 @@ ld %>%
 
 There are eight types of trance and possession phenomena recorded in the Atlas and a wide set of possible covariates, all with a number of levels (see the Appendix).
 
-The data are challenging in two ways. The variables are themselves correlated, either because they measure different facets of the same thing (like how complex a society is) or because they were adapted together by socially or geographically close societies (Galton's problem). In addition, data are missing from the Atlas in a non-random manner (e.g. if a society is hard to access, it is harder to provide a population size estimate for it).
+The data are challenging in two ways. The variables are themselves correlated, either because they measure different facets of the same thing (like how complex a society is; see the figure below) or because they were adapted together by socially or geographically close societies (Galton's problem). In addition, data are missing from the Atlas in a non-random manner (e.g. if a society is hard to access, it is harder to provide a population size estimate for it).
+
+```{r }
+cord = wd %>% 
+  filter(in_sccs) %>% 
+  select(-outcome,-EA112_Trance_states,-trance_present,-possession_present,-possession_trance_present,-soc_id,-in_sccs) %>% 
+  mutate_if(is.logical, as.double)
+
+cor(cord,use="pairwise.complete.obs")
+
+
+```
 
 We can account for Galton's problem (geographic and cultural co-variation) by restricting our initial data to societies in the Standard Cross-Cultural Sample.
 
