@@ -56,16 +56,16 @@ the D-Place database, Kirby et al. (2016).
 The Atlas records the presence of trance and possession phenomena in a
 given society, using the following variable (EA112):
 
-| coding | Description                                                                                                                                                                                                                                    |
-|-------:|:-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
-|      1 | Trance behavior is known to occur, but there is no belief in possession.                                                                                                                                                                       |
-|      2 | A belief in possession exists.                                                                                                                                                                                                                 |
-|      3 | Trance behavior is known to occur and is explained as due to possession. There is no possession belief referring to other experiences and there are no trance states with other explanations.                                                  |
-|      4 | Two types of trance states are known to occur. One which is explained as due to possession and one which is given another type of explanation. In addition to explaining trance, possession belief also refers to one or more other phenomena. |
-|      5 | There is both a trance state and a belief in possession, but this belief refers to phenomena other than trance, which is explained through other categories.                                                                                   |
-|      6 | Trance explained as due to possession is known to occur, and there are no other trance states, but cases of possession outside of trance are also believed to occur.                                                                           |
-|      7 | Trance states of two kinds are known to occur, some of which are explained by possession. No other phenomena are explained by possession.                                                                                                      |
-|      8 | No trance states of any kind are known to occur, and there is no belief in possession.                                                                                                                                                         |
+| Coding | Description                                                                                                                                                                                                                                    | possession_trance | n in EA | n in SCCS |
+|-------:|:-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|:------------------|--------:|----------:|
+|      1 | Trance behavior is known to occur, but there is no belief in possession.                                                                                                                                                                       | other             |     135 |        26 |
+|      2 | A belief in possession exists.                                                                                                                                                                                                                 | other             |      45 |         9 |
+|      3 | Trance behavior is known to occur and is explained as due to possession. There is no possession belief referring to other experiences and there are no trance states with other explanations.                                                  | possession trance |      67 |        10 |
+|      4 | Two types of trance states are known to occur. One which is explained as due to possession and one which is given another type of explanation. In addition to explaining trance, possession belief also refers to one or more other phenomena. | possession trance |      93 |        31 |
+|      5 | There is both a trance state and a belief in possession, but this belief refers to phenomena other than trance, which is explained through other categories.                                                                                   | other             |      79 |        27 |
+|      6 | Trance explained as due to possession is known to occur, and there are no other trance states, but cases of possession outside of trance are also believed to occur.                                                                           | possession trance |      85 |        25 |
+|      7 | Trance states of two kinds are known to occur, some of which are explained by possession. No other phenomena are explained by possession.                                                                                                      | possession trance |      36 |         5 |
+|      8 | No trance states of any kind are known to occur, and there is no belief in possession.                                                                                                                                                         | other             |     118 |        18 |
 
 This is basically a truth table of whether possession beliefs or trance
 states are present in a given society, with some causal links between
@@ -172,26 +172,12 @@ sample.
 
 ## 5. Results on the training sample
 
-Here is the distribution of the various descriptions for trance and
-possession in our training sample.
-
-| description                                                                                                                                                                                                                                    | code | name                                             | outcome           | count |
-|:-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|-----:|:-------------------------------------------------|:------------------|------:|
-| No trance states of any kind are known to occur, and there is no belief in possession.                                                                                                                                                         |    8 | No trance or possession                          | other             |    18 |
-| A belief in possession exists.                                                                                                                                                                                                                 |    2 | Possession                                       | other             |     9 |
-| There is both a trance state and a belief in possession, but this belief refers to phenomena other than trance, which is explained through other categories.                                                                                   |    5 | T and P, but T not due to P                      | other             |    27 |
-| Trance behavior is known to occur and is explained as due to possession. There is no possession belief referring to other experiences and there are no trance states with other explanations.                                                  |    3 | T due to P only; P causes T only                 | possession trance |    10 |
-| Trance explained as due to possession is known to occur, and there are no other trance states, but cases of possession outside of trance are also believed to occur.                                                                           |    6 | T due to P only; P explains T and others         | possession trance |    25 |
-| Trance behavior is known to occur, but there is no belief in possession.                                                                                                                                                                       |    1 | Trance, no possession                            | other             |    26 |
-| Two types of trance states are known to occur. One which is explained as due to possession and one which is given another type of explanation. In addition to explaining trance, possession belief also refers to one or more other phenomena. |    4 | Two T states, one due to P; P expl. T and others | possession trance |    31 |
-| Trance states of two kinds are known to occur, some of which are explained by possession. No other phenomena are explained by possession.                                                                                                      |    7 | Two T states, one due to P; P explains T only    | possession trance |     5 |
-|                                                                                                                                                                                                                                                |   NA | Total                                            | NA                |   151 |
-
-We see that only about 10% of societies have no trance or possession
-phenomena. From the rest, a majority have possession trance in some
-form. Following Bourguignon (1968) we can reduce this to a binary: 81
-societies have possession trance, 70 have other forms of trance and
-possessior or show neither.
+Looking back at the table in the previous section, we see that only
+about 10% of societies have no trance or possession phenomena. From the
+rest, a majority have possession trance in some form. Following
+Bourguignon (1968) we can reduce this to a binary: 81 societies have
+possession trance, 70 have other forms of trance and possessior or show
+neither.
 
 | possession_trance | count |
 |:------------------|------:|
@@ -278,7 +264,7 @@ complex family structures, more social complexity, more complex
 settlement patterns, and larger settlements. The societal variables that
 do not, strictly speaking, measure social organisation are less obvious.
 
-![](figures/unnamed-chunk-8-1.png)
+![](figures/unnamed-chunk-7-1.png)
 
 ## 7. Summary
 

@@ -57,11 +57,25 @@ The use of cross-cultural typological data in general and the Ethnographic Atlas
 The Atlas records the presence of trance and possession phenomena in a given society, using the following variable (EA112):
 
 ```{r }
+trance = sccs %>% 
+  filter(var_id == 'EA112') %>% 
+  count(var_name,code,var_description) %>% 
+  rename(name = var_name, description = var_description, "n in SCCS" = n) %>% 
+  mutate(
+    possession_trance = case_when(
+      code %in% c(3,4,6,7) ~ 'possession trance',
+      code %in% c(1,2,8,5) ~ 'other'
+    ) %>% 
+      fct_relevel('possession trance')
+  )
+
 ld %>% 
   filter(var_title == 'Trance states', !is.na(code)) %>% 
-  distinct(code, var_description) %>% 
+  count(code, var_description, name = 'n in EA') %>% 
+  left_join(trance) %>% 
   arrange(code) %>% 
-  rename(coding = code, Description = var_description) %>% 
+  rename(Coding = code, Description = var_description) %>% 
+  select(Coding,Description,possession_trance,`n in EA`,`n in SCCS`) %>% 
   kable('simple')
 ```
 
@@ -102,34 +116,12 @@ We use hyperparameter tuning to find the best possible model.  The model is fit 
 
 ## 5. Results on the training sample
 
-Here is the distribution of the various descriptions for trance and possession in our training sample.
-
-```{r }
-trance = sccs %>% 
-  filter(var_id == 'EA112') %>% 
-  count(var_name,code,var_description) %>% 
-  rename(name = var_name, description = var_description, count = n) %>% 
-  mutate(
-    possession_trance = case_when(
-      code %in% c(3,4,6,7) ~ 'possession trance',
-      code %in% c(1,2,8,5) ~ 'other'
-    ) %>% 
-      fct_relevel('possession trance')
-  )
-
-trance %>% 
-  select(description,code,name,possession_trance,count) %>%
-  rename(outcome = possession_trance) %>% 
-  add_row(name = 'Total', description = '', count = 151) %>% 
-  kable('simple')
-```
-
-We see that only about 10% of societies have no trance or possession phenomena. From the rest, a majority have possession trance in some form. Following @bourguignon1968 we can reduce this to a binary: 81 societies have possession trance, 70 have other forms of trance and possessior or show neither.
+Looking back at the table in the previous section, we see that only about 10% of societies have no trance or possession phenomena. From the rest, a majority have possession trance in some form. Following @bourguignon1968 we can reduce this to a binary: 81 societies have possession trance, 70 have other forms of trance and possessior or show neither.
 
 ```{r }
 trance %>% 
   group_by(possession_trance) %>% 
-  summarise(count = sum(count)) %>% 
+  summarise(count = sum(`n in SCCS`)) %>% 
   kable('simple')
 ```
 
