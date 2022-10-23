@@ -9,9 +9,6 @@ output:
 bibliography: bibliography.bib
 ---
 
-# To do: one-hot encoding ended up creating unidentifiable vars (where both values of a col are present) so do something with that.
-
-
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = FALSE, warning = FALSE, error = FALSE, message = FALSE, fig.path = 'figures/', fig.width = 8, fig.height = 8)
 ```
@@ -106,8 +103,7 @@ cord = wd %>%
   select(-outcome,-EA112_Trance_states,-trance_present,-possession_present,-possession_trance_present,-soc_id,-in_sccs) %>% 
   mutate_if(is.logical, as.double)
 
-cor(cord,use="pairwise.complete.obs")
-
+# cor(cord,use="pairwise.complete.obs")
 
 ```
 
@@ -138,7 +134,7 @@ trance %>%
   kable('simple')
 ```
 
-We compare this with how our best model categorises each society. This is our model's confusion matrix. `0` is absence of possession trance, `1` is presence of possession trance. The rows add up to values in the original, the columns are the model's predictions. The last two columns show the error rate. The model's accuracy on absence of possession trance is relatively low, though higher than chance (54 out of 80, p < 0.01 using a binomial test with a true p of .529). It is mostly accurate capturing the presence of possession trance.
+We compare this with how our best model categorises each society. This is our model's confusion matrix. `0` is absence of possession trance, `1` is presence of possession trance. The rows add up to values in the original, the columns are the model's predictions. The last two columns show the error rate.
 
 ```{r }
 cm1a = read_tsv('models/conf_matrix11model.tsv')
@@ -147,14 +143,15 @@ cm1a %>%
   relocate(original) %>% 
   kable('simple', digits = 2)
 
-# precision = true 1/false 1
+# precision = true 1/tru1 + false 1
 # recall = true 1/true1 + false0
-precision = 68 / 94
-recall = 68 / 71
+precision = 64 / (64+12)
+recall = 64 / (64+7)
 f = (2 * precision * recall) / (precision + recall)
+chisq.test(c(c(68,12),c(7,64)))
 ```
 
-The model has an F-measure of `r round(f,2)`, with a penalty on overgeneralising possession trance. Though comparisons are hard to make, this is not particularly accurate for a binary categorisation problem. We did expect this, though, as it is unlikely that any complex cultural phenomenon could be reduced to a small number of cross-cultural predictors.
+The model has an F-measure of `r round(f,2)`, with a penalty on slightly overgeneralising possession trance. Though comparisons are hard to make, this is not particularly accurate for a binary categorisation problem. We did expect this, though, as it is unlikely that any complex cultural phenomenon could be reduced to a small number of cross-cultural predictors.
 
 ### 6. Results on the EA data
 
@@ -168,12 +165,12 @@ cm1b = read_tsv('models/conf_matrix11test.tsv')
 cm1b %>% 
   kable('simple')
 
-# precision = true 1/false 1
+# precision = true 1/true1+false 1
 # recall = true 1/true1 + false0
-precision2 = 221 / 389
-recall2 = 221 / 281
+precision2 = 194 / (194+113)
+recall2 = 194 / (194+87)
 f2 = (2 * precision2 * recall2) / (precision2 + recall2)
-
+chisq.test(c(c(264,113),c(87,194)))
 ```
 
 The F-measue of this model is `r round(f2,2)`. Accuracy here is much worse than for the training data only. That is at least partly because the model is ignorant of the phylogenetic signal which might result in patterns that are unexpected from a purely correlational point of view. However, the model is still more accurate than it would be by chance.
@@ -204,9 +201,9 @@ vars2 %>% kable(digits = 2, 'simple')
 
 We now look at the direction of these effects (does e.g.\ increased jurisdictional hierarchy go with more or less prevalent possession trance?).
 
-The figure below shows the proportion of societies with possession trance (dark blue) and without (light blue) across the ordered levels of the predictors that the model thinks are important. They come in order of how important they are, according to the model; prevalence of slavery, then family organisation, and so on. The predictor levels are ordered according to coding and generally go from less prevalent (top) to more prevalent (bottom):
+The figure below shows the proportion of societies with possession trance (dark blue) and without (light blue) across the ordered levels of the predictors that the model thinks are important. They come in order of how important they are, according to the model; prevalence of slavery, then family organisation, and so on. The predictor levels are ordered according to coding and generally go from a pattern being less prevalent (top) to more prevalent (bottom):
 
-For the most important variables, we see a clear correllation between the presence of possession trance and the variable scaling up. Societies in which slavery is more prevalent have more possession trance than those where it is less prevalent. Same is true for societies with more complex family structures, more social complexity, more complex settlement patterns, and larger settlements. The societal variables that do not, strictly speaking, measure social organisation are less obvious.
+Ee see a clear correlation between the presence of possession trance and the variable scaling up, e.g. societies in which slavery is more prevalent have more possession trance than those where it is less prevalent. The across-level distributions are also interesting, e.g. the main distinction for patterns of slavery is for societies without slavery (first factor level) and all others with some form of slavery (subsequent factor levels).
 
 ```{r fig.width=10,fig.height=15}
 d_out = ld %>% 
@@ -253,7 +250,9 @@ wrap_plots(plots, ncol = 2) + plot_annotation(caption = 'Dark blue: possession t
 
 ## 7. Summary
 
-These results go some way in confirming hypotheses on the cross-cultural correlates of possession trance in the literature. @bourguignon1968 explicitly tests the variables of slavery, jurisdictional hierarchy, settlement patterns, and kin groups. @shaara1992 point to a high value placed on female virginity at marriage, captured here by norms of premarital sexual behaviour for girls. These are all important variables in our model. @greenbaum1973 and @shaara1992 point to sexual division of labour, while @wood2018complexity to the role of moralising high gods, neither of which is relevant in our model.
+These results go some way in confirming hypotheses on the cross-cultural correlates of possession trance in the literature. @bourguignon1968 explicitly tests the variables of slavery, jurisdictional hierarchy, settlement patterns, and kin groups. @shaara1992 point to a high value placed on female virginity at marriage, captured here by norms of premarital sexual behaviour for girls, @wood2018complexity point to the role of moralising high gods. These are all important variables in our model. @greenbaum1973 and @shaara1992 point to sexual division of labour but this is not relevant in our model.
+
+Note that @shaara1992 use cognatic kinship as a proxy of social complexity (which in itself is robustly supported by our model) while the measure referenced by @wood2018complexity, the presence of moralising high gods, has in itself been argued to correlate with social complexity (see @botero2014ecology and @watts2015broad).
 
 This brings us back to the original predictions in the table above.
 
@@ -265,9 +264,9 @@ This brings us back to the original predictions in the table above.
 |main mode of subsistence|@bourgouignon1977|not relevant|
 |increased social participation$\rightarrow{}$possession|@swanson1978|indirectly, through domestic and social complexity|
 |more complexity$\rightarrow{}$trance w/ possession|@winkelman1986|yes, see above|
-|cognatic kinship$\rightarrow{}$more possession and trance|@shaara1992|not directly, but kinship structure is relevant|
+|cognatic kinship$\rightarrow{}$more possession and trance|@shaara1992|not directly|
 |decreased social participation$\rightarrow{}$possession|@douglas2004natural|yes, see above|
-|monotheism|@wood2018complexity|not relevant in our model|
+|monotheism|@wood2018complexity|yes|
 
 We can predict some types of trance and possession phenomena in the SCCS subset of the EA. Not all of them. Some of the important co-variates are the ones mentioned by earlier work and the direction of the relationships corroborates the literature.
 

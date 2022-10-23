@@ -27,17 +27,16 @@ trance in cross-cultural data. Many such correlations have been proposed
 by previous work. Here is a list, cross-referenced with C. P. Wood and
 Stockly (2018):
 
-| Relationship                                                                 | Reference                     |
+| Relationship                                                 | Reference                     |
 |:-----------------------------------|:-----------------------------------|
-| less complexity  →  trance w/o possession                                    | Bourguignon (1968)            |
-| women’s social participation                                                 | Bourguignon (1973)            |
-| increased role differentiation and slavery parctices → trance and possession | Greenbaum (1973)              |
-| main mode of subsistence                                                     | Bourguignon and Evascu (1977) |
-| increased social participation  →  possession                                | Swanson (1978)                |
-| more complexity  →  trance w/ possession                                     | M. J. Winkelman (1986)        |
-| cognatic kinship  →  more possession and trance                              | Shaara (1992)                 |
-| decreased social participation  →  possession                                | Douglas (2004)                |
-| monotheism                                                                   | C. P. Wood and Stockly (2018) |
+| Social complexity, rigidity, gender role differentiation     | Bourguignon (1968)            |
+| Women’s social participation                                 | Bourguignon (1973)            |
+| Slavery, role differentiation, and structure differentiation | Greenbaum (1973)              |
+| Increased social participation                               | Swanson (1978)                |
+| Social complexity                                            | M. J. Winkelman (1986)        |
+| Social flexibility, cognatic kinship                         | Shaara (1992)                 |
+| Decreased social participation                               | Douglas (2004)                |
+| Social rigidity, monotheism                                  | C. P. Wood and Stockly (2018) |
 
 Several works made the same point or emphasised various aspects of the
 same relationship. The above table is somewhat reductive.
@@ -87,7 +86,6 @@ Winkelman (1986), and Douglas (2004).
 | EA012 | Marital residence with kin: prevailing pattern  | The prevailing profile of marital residence in the society.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     |
 | EA015 | Community marriage organization                 | The prevalence of local endogamy, agamy, and exogamy, together with the presence or absence of localized kin groups. The specific structure of clans, whether ambilocal, matrilocal, or patrilocal, is revealed by the variable describing prevailing patterns of residence with kin.                                                                                                                                                                                                                                                                                                                                                                                           |
 | EA023 | Cousin marriages permitted                      | The rules or practices governing the marriageability or nonmarriageability of a man’s first cousins and, in some cases, second cousins.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         |
-| EA027 | Kin terms for cousins                           | Extent to which names for cousins distinguish cousin subtypes and/or among other groups of kin.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 |
 | EA030 | Settlement patterns                             | The prevailing type of settlement pattern.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      |
 | EA031 | Mean size of local communities                  | The average population of local communities, whatever the pattern of settlement, computed from census data or other evidence.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   |
 | EA032 | Jurisdictional hierarchy of local community     | The number of jurisdictional levels in the local community, with 2 representing the theoretical minimum (e.g., independent nuclear or polygynous families) and 4 representing the theoretical maximum (e.g., nuclear families nested within extended families and clan-barrios). See the variable ““Jurisdictional hierarchy beyond the local community”” for information on organization beyond the local community. Note that different types of organization on the same level, e.g., a consanguineal lineage and its localized equivalent, are counted as one, and organizations not held to be legitimate, e.g., imposed colonial regimes, are excluded.                   |
@@ -114,11 +112,11 @@ Atlas and a wide set of possible covariates, all with a number of levels
 
 The data are challenging in two ways. The variables are themselves
 correlated, either because they measure different facets of the same
-thing (like how complex a society is) or because they were adapted
-together by socially or geographically close societies (Galton’s
-problem). In addition, data are missing from the Atlas in a non-random
-manner (e.g. if a society is hard to access, it is harder to provide a
-population size estimate for it).
+thing (like how complex a society is; see the figure below) or because
+they were adapted together by socially or geographically close societies
+(Galton’s problem). In addition, data are missing from the Atlas in a
+non-random manner (e.g. if a society is hard to access, it is harder to
+provide a population size estimate for it).
 
 We can account for Galton’s problem (geographic and cultural
 co-variation) by restricting our initial data to societies in the
@@ -188,22 +186,26 @@ We compare this with how our best model categorises each society. This
 is our model’s confusion matrix. `0` is absence of possession trance,
 `1` is presence of possession trance. The rows add up to values in the
 original, the columns are the model’s predictions. The last two columns
-show the error rate. The model’s accuracy on absence of possession
-trance is relatively low, though higher than chance (54 out of 80, p \<
-0.01 using a binomial test with a true p of .529). It is mostly accurate
-capturing the presence of possession trance.
+show the error rate.
 
 | original |   0 |   1 | Error | Rate    |
 |:---------|----:|----:|------:|:--------|
-| 0        |  54 |  26 |  0.32 | =26/80  |
-| 1        |   3 |  68 |  0.04 | =3/71   |
-| Total    |  57 |  94 |  0.19 | =29/151 |
+| 0        |  68 |  12 |  0.15 | =12/80  |
+| 1        |   7 |  64 |  0.10 | =7/71   |
+| Total    |  75 |  76 |  0.13 | =19/151 |
 
-The model has an F-measure of 0.82, with a penalty on overgeneralising
-possession trance. Though comparisons are hard to make, this is not
-particularly accurate for a binary categorisation problem. We did expect
-this, though, as it is unlikely that any complex cultural phenomenon
-could be reduced to a small number of cross-cultural predictors.
+    ## 
+    ##  Chi-squared test for given probabilities
+    ## 
+    ## data:  c(c(68, 12), c(7, 64))
+    ## X-squared = 85.106, df = 3, p-value < 2.2e-16
+
+The model has an F-measure of 0.87, with a penalty on slightly
+overgeneralising possession trance. Though comparisons are hard to make,
+this is not particularly accurate for a binary categorisation problem.
+We did expect this, though, as it is unlikely that any complex cultural
+phenomenon could be reduced to a small number of cross-cultural
+predictors.
 
 ### 6. Results on the EA data
 
@@ -218,8 +220,14 @@ trance and possession information are available:
 
 | possession_trance_present |   0 |   1 |
 |--------------------------:|----:|----:|
-|                         0 | 209 | 168 |
-|                         1 |  60 | 221 |
+|                         0 | 264 | 113 |
+|                         1 |  87 | 194 |
+
+    ## 
+    ##  Chi-squared test for given probabilities
+    ## 
+    ## data:  c(c(264, 113), c(87, 194))
+    ## X-squared = 118.11, df = 3, p-value < 2.2e-16
 
 The F-measue of this model is 0.66. Accuracy here is much worse than for
 the training data only. That is at least partly because the model is
@@ -233,16 +241,16 @@ cutoff of 10/47.
 
 | ID    | Name                                            | relative_importance |
 |:------|:------------------------------------------------|--------------------:|
-| EA070 | Slavery: type                                   |               37.92 |
-| EA008 | Domestic organization                           |               35.20 |
-| EA033 | Jurisdictional hierarchy beyond local community |               25.74 |
-| EA066 | Class differentiation: primary                  |               24.02 |
-| EA078 | Norms of premarital sexual behavior of girls    |               22.24 |
-| EA030 | Settlement patterns                             |               16.59 |
-| EA074 | Inheritance rule for real property (land)       |                8.06 |
-| EA031 | Mean size of local communities                  |                7.60 |
-| EA023 | Cousin marriages permitted                      |                7.35 |
-| EA027 | Kin terms for cousins                           |                5.96 |
+| EA070 | Slavery: type                                   |               75.60 |
+| EA008 | Domestic organization                           |               60.69 |
+| EA078 | Norms of premarital sexual behavior of girls    |               48.41 |
+| EA066 | Class differentiation: primary                  |               47.78 |
+| EA033 | Jurisdictional hierarchy beyond local community |               38.08 |
+| EA030 | Settlement patterns                             |               33.61 |
+| EA034 | Religion: high gods                             |               23.14 |
+| EA023 | Cousin marriages permitted                      |               21.12 |
+| EA074 | Inheritance rule for real property (land)       |               19.86 |
+| EA031 | Mean size of local communities                  |               17.13 |
 
 We now look at the direction of these effects (does e.g. increased
 jurisdictional hierarchy go with more or less prevalent possession
@@ -253,18 +261,18 @@ trance (dark blue) and without (light blue) across the ordered levels of
 the predictors that the model thinks are important. They come in order
 of how important they are, according to the model; prevalence of
 slavery, then family organisation, and so on. The predictor levels are
-ordered according to coding and generally go from less prevalent (top)
-to more prevalent (bottom):
+ordered according to coding and generally go from a pattern being less
+prevalent (top) to more prevalent (bottom):
 
-For the most important variables, we see a clear correllation between
-the presence of possession trance and the variable scaling up. Societies
-in which slavery is more prevalent have more possession trance than
-those where it is less prevalent. Same is true for societies with more
-complex family structures, more social complexity, more complex
-settlement patterns, and larger settlements. The societal variables that
-do not, strictly speaking, measure social organisation are less obvious.
+Ee see a clear correlation between the presence of possession trance and
+the variable scaling up, e.g. societies in which slavery is more
+prevalent have more possession trance than those where it is less
+prevalent. The across-level distributions are also interesting, e.g. the
+main distinction for patterns of slavery is for societies without
+slavery (first factor level) and all others with some form of slavery
+(subsequent factor levels).
 
-![](figures/unnamed-chunk-7-1.png)
+![](figures/unnamed-chunk-8-1.png)
 
 ## 7. Summary
 
@@ -273,10 +281,16 @@ correlates of possession trance in the literature. Bourguignon (1968)
 explicitly tests the variables of slavery, jurisdictional hierarchy,
 settlement patterns, and kin groups. Shaara (1992) point to a high value
 placed on female virginity at marriage, captured here by norms of
-premarital sexual behaviour for girls. These are all important variables
-in our model. Greenbaum (1973) and Shaara (1992) point to sexual
-division of labour, while C. P. Wood and Stockly (2018) to the role of
-moralising high gods, neither of which is relevant in our model.
+premarital sexual behaviour for girls, C. P. Wood and Stockly (2018)
+point to the role of moralising high gods. These are all important
+variables in our model. Greenbaum (1973) and Shaara (1992) point to
+sexual division of labour but this is not relevant in our model.
+
+Note that Shaara (1992) use cognatic kinship as a proxy of social
+complexity (which in itself is robustly supported by our model) while
+the measure referenced by C. P. Wood and Stockly (2018), the presence of
+moralising high gods, has in itself been argued to correlate with social
+complexity (see Botero et al. (2014) and Watts et al. (2015)).
 
 This brings us back to the original predictions in the table above.
 
@@ -288,9 +302,9 @@ This brings us back to the original predictions in the table above.
 | main mode of subsistence                                                   | Bourguignon and Evascu (1977) | not relevant                                       |
 | increased social participation → possession                                | Swanson (1978)                | indirectly, through domestic and social complexity |
 | more complexity → trance w/ possession                                     | M. J. Winkelman (1986)        | yes, see above                                     |
-| cognatic kinship → more possession and trance                              | Shaara (1992)                 | not directly, but kinship structure is relevant    |
+| cognatic kinship → more possession and trance                              | Shaara (1992)                 | not directly                                       |
 | decreased social participation → possession                                | Douglas (2004)                | yes, see above                                     |
-| monotheism                                                                 | C. P. Wood and Stockly (2018) | not relevant in our model                          |
+| monotheism                                                                 | C. P. Wood and Stockly (2018) | yes                                                |
 
 We can predict some types of trance and possession phenomena in the SCCS
 subset of the EA. Not all of them. Some of the important co-variates are
@@ -323,7 +337,6 @@ trance and possession phenomena.
 | The prevailing profile of marital residence in the society.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                     | EA012 | Marital residence with kin: prevailing pattern  | Ambilocal, Patrilocal, Ambi-viri, Virilocal, Avunculocal, Avuncu-virilocal, Avuncu-uxorilocal, Matrilocal, Neolocal, Separate, Ambi-uxo, Uxorilocal, Missing data                                                           |
 | The prevalence of local endogamy, agamy, and exogamy, together with the presence or absence of localized kin groups. The specific structure of clans, whether ambilocal, matrilocal, or patrilocal, is revealed by the variable describing prevailing patterns of residence with kin.                                                                                                                                                                                                                                                                                                                                                                                           | EA015 | Community marriage organization                 | Exogamous, Clans, Agamous, Segmented, no exogamy, Missing data, Segmented, exogamy, Demes                                                                                                                                   |
 | The rules or practices governing the marriageability or nonmarriageability of a man’s first cousins and, in some cases, second cousins.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         | EA023 | Cousin marriages permitted                      | No first/second cousins, No first cousins, Cross-cousin, Any first cousins, Only second cousins, Matrilateral cross only, Patrilateral cross only, Trilateral, Missing data, Maternal only, Some second only, Paternal only |
-| Extent to which names for cousins distinguish cousin subtypes and/or among other groups of kin.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                 | EA027 | Kin terms for cousins                           | Eskimo, Omaha, Iroquois, Descriptive, Hawaiian, Mixed, Missing data, Crow, Sudanese                                                                                                                                         |
 | The prevailing type of settlement pattern.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                      | EA030 | Settlement patterns                             | Nomadic, Missing data, Dispersed homesteads, Complex permanent, Hamlets, Semisedentary, Villages/towns, Impermanent, Seminomadic                                                                                            |
 | The average population of local communities, whatever the pattern of settlement, computed from census data or other evidence.                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                   | EA031 | Mean size of local communities                  | \<50, 100-199, Missing data, 5000-50000, 400-1000, 50-99, 200-399, 50000+, 1000-5000                                                                                                                                        |
 | The number of jurisdictional levels in the local community, with 2 representing the theoretical minimum (e.g., independent nuclear or polygynous families) and 4 representing the theoretical maximum (e.g., nuclear families nested within extended families and clan-barrios). See the variable ““Jurisdictional hierarchy beyond the local community”” for information on organization beyond the local community. Note that different types of organization on the same level, e.g., a consanguineal lineage and its localized equivalent, are counted as one, and organizations not held to be legitimate, e.g., imposed colonial regimes, are excluded.                   | EA032 | Jurisdictional hierarchy of local community     | Extended families, Independent families, Missing data, Clan-barrios                                                                                                                                                         |
@@ -393,15 +406,6 @@ predictors A==2 and A==3).
 | EA023  | Cousin marriages permitted                      | Duolateral marriage permitted with paternal cousins only (FaBrDa or FaSiDa)                                                                                                                                                                                                                                                                                                    | 3             |
 | EA023  | Cousin marriages permitted                      | Quadrilateral marriage, i.e., marriage allowed with any first cousin                                                                                                                                                                                                                                                                                                           | 4             |
 | EA023  | Cousin marriages permitted                      | Missing data                                                                                                                                                                                                                                                                                                                                                                   | NA            |
-| EA027  | Kin terms for cousins                           | Hawaiian, i.e., all cousins equated with siblings or called by terms clearly derivative from those for siblings                                                                                                                                                                                                                                                                | 1             |
-| EA027  | Kin terms for cousins                           | Eskimo, i.e., FaBrCh, FaSiCh, MoBrCh, and MoSiCh equated with each other but differentiated from siblings                                                                                                                                                                                                                                                                      | 2             |
-| EA027  | Kin terms for cousins                           | Iroquois, i.e., FaSiCh equated with MoBrCh but differentiated from both siblings and parallel cousins                                                                                                                                                                                                                                                                          | 3             |
-| EA027  | Kin terms for cousins                           | Mixed or variant patterns not adequately represented by any of the foregoing symbols. The details are given under ““Classification by Clusters.””                                                                                                                                                                                                                              | 3             |
-| EA027  | Kin terms for cousins                           | Omaha, i.e., MoBrCh equated with MoBr or Mo and/or FaSiCh with SiCh(ms) or Ch                                                                                                                                                                                                                                                                                                  | 4             |
-| EA027  | Kin terms for cousins                           | Crow, i.e., FaSiCh equated with Fa or FaSi and/or MoBrCh with Ch or BrCh(ws)                                                                                                                                                                                                                                                                                                   | 4             |
-| EA027  | Kin terms for cousins                           | Descriptive or derivative, rather than elementary, terms employed for all cousins                                                                                                                                                                                                                                                                                              | 5             |
-| EA027  | Kin terms for cousins                           | Sudanese, i.e., FaSiCh and MoBrCh distinguished alike from siblings, parallel cousins, and each other but without conforming to either the Crow, the descriptive, or the Omaha patterns                                                                                                                                                                                        | 5             |
-| EA027  | Kin terms for cousins                           | Missing data                                                                                                                                                                                                                                                                                                                                                                   | NA            |
 | EA030  | Settlement patterns                             | Fully migratory or nomadic bands                                                                                                                                                                                                                                                                                                                                               | 1             |
 | EA030  | Settlement patterns                             | Seminomadic communities whose members wander in bands for at least half of the year but occupy a fixed settlement at some season or seasons, e.g., recurrently occupied winter quarters                                                                                                                                                                                        | 2             |
 | EA030  | Settlement patterns                             | Semisedentary communities whose members shift from one to another fixed settlement at different seasons or who occupy more or less permanently a single settlement from which a substantial proportion of the population departs seasonally to occupy shifting camps, e.g., during transhumance                                                                                | 3             |
@@ -443,12 +447,12 @@ predictors A==2 and A==3).
 | EA042  | Subsistence economy: dominant activity          | Intensive agriculture contributes most                                                                                                                                                                                                                                                                                                                                         | int_agr       |
 | EA042  | Subsistence economy: dominant activity          | Two or more sources contribute equally                                                                                                                                                                                                                                                                                                                                         | multiple      |
 | EA042  | Subsistence economy: dominant activity          | Pastoralism contributes most                                                                                                                                                                                                                                                                                                                                                   | pastoralism   |
-| EA043  | Descent: major type                             | Bilateral (EA017 = 1, EA019 = 1, EA021 = 1 or EA021 = 2)                                                                                                                                                                                                                                                                                                                       | other         |
-| EA043  | Descent: major type                             | Duolateral (EA017 \> 1, EA019 \> 1, EA021 = 9 or EA021 = 0)                                                                                                                                                                                                                                                                                                                    | other         |
+| EA043  | Descent: major type                             | Bilateral (EA017 = 1, EA019 = 1, EA021 = 1 or EA021 = 2)                                                                                                                                                                                                                                                                                                                       | cognatic      |
+| EA043  | Descent: major type                             | Duolateral (EA017 \> 1, EA019 \> 1, EA021 = 9 or EA021 = 0)                                                                                                                                                                                                                                                                                                                    | cognatic      |
+| EA043  | Descent: major type                             | Ambilineal (EA017 = 1, EA019 = 1, EA021 = 3 or EA021 = 4 or EA021 = 5)                                                                                                                                                                                                                                                                                                         | cognatic      |
+| EA043  | Descent: major type                             | Matrilineal (EA017 = 1, EA019 \> 1, EA021 = 9)                                                                                                                                                                                                                                                                                                                                 | matrilineal   |
 | EA043  | Descent: major type                             | Quasi-lineages (EA017 = 1, EA019 = 1, EA021 = 6)                                                                                                                                                                                                                                                                                                                               | other         |
 | EA043  | Descent: major type                             | Mixed (EA017 and/or EA019 \> 1,and EA021 not equal to 9)                                                                                                                                                                                                                                                                                                                       | other         |
-| EA043  | Descent: major type                             | Matrilineal (EA017 = 1, EA019 \> 1, EA021 = 9)                                                                                                                                                                                                                                                                                                                                 | other         |
-| EA043  | Descent: major type                             | Ambilineal (EA017 = 1, EA019 = 1, EA021 = 3 or EA021 = 4 or EA021 = 5)                                                                                                                                                                                                                                                                                                         | other         |
 | EA043  | Descent: major type                             | Patrilineal (EA017 \> 1, EA019 = 1, EA021 = 9)                                                                                                                                                                                                                                                                                                                                 | patrilineal   |
 | EA043  | Descent: major type                             | Missing data                                                                                                                                                                                                                                                                                                                                                                   | NA            |
 | EA053  | Sex differences: animal husbandry               | Differentiation of specific tasks by sex but approximately equal participation by both sexes in the total activity                                                                                                                                                                                                                                                             | both          |
@@ -520,6 +524,11 @@ predictors A==2 and A==3).
 
 ## References
 
+Botero, Carlos A, Beth Gardner, Kathryn R Kirby, Joseph Bulbulia,
+Michael C Gavin, and Russell D Gray. 2014. “The Ecology of Religious
+Beliefs.” *Proceedings of the National Academy of Sciences* 111 (47):
+16784–89.
+
 Bourguignon, Erika. 1968. “A Cross-Cultural Study of Dissociational
 States.” Columbus, Ohio: The Ohio State University Research Foundation.
 
@@ -574,6 +583,12 @@ Introduction for Beginners*. Blue Windmill Media.
 
 Swanson, Guy E. 1978. “Trance and Possession: Studies of Charismatic
 Influence.” *Review of Religious Research* 19: 253–78.
+
+Watts, Joseph, Simon J Greenhill, Quentin D Atkinson, Thomas E Currie,
+Joseph Bulbulia, and Russell D Gray. 2015. “Broad Supernatural
+Punishment but Not Moralizing High Gods Precede the Evolution of
+Political Complexity in Austronesia.” *Proceedings of the Royal Society
+B: Biological Sciences* 282 (1804): 20142556.
 
 Winkelman, Michael. 2015. “Shamanism as a Biogenetic Structural Paradigm
 for Humans’ Evolved Social Psychology.” *Psychology of Religion and

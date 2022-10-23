@@ -75,7 +75,7 @@ dat = dat %>%
 # --- filter --- #
 
 # these are the variables of interest for trance and possession
-keep_vars = paste('EA', c("008","012","015","023","027","030","031","032","033","034","042","043","053","054","066","068","070","072","073","074","078","112","113"), sep='')
+keep_vars = paste('EA', c("008","012","015","023","030","031","032","033","034","042","043","053","054","066","068","070","072","073","074","078","112","113"), sep='')
 
 # we recode some of these as ordinal variables, others as factors, we leave the rest as is, thereby assuming it is an ordinal variable
 trance_dict = codes %>% 
@@ -94,12 +94,9 @@ trance_dict = codes %>%
         var_id == 'EA023' & code %in% c(1,2,3,4,5,6,9,13) ~ '3',
         var_id == 'EA023' & code %in% c(10) ~ '4',
         var_id == 'EA043' & code %in% c(1) ~ "patrilineal",
-        var_id == 'EA043' & code %in% c(2:7) ~ "other",
-        var_id == 'EA027' & code %in% c(4) ~ '1',
-        var_id == 'EA027' & code %in% c(3) ~ '2',
-        var_id == 'EA027' & code %in% c(5,8) ~ '3',
-        var_id == 'EA027' & code %in% c(1,6) ~ '4',
-        var_id == 'EA027' & code %in% c(7,2) ~ '5',
+        var_id == 'EA043' & code %in% c(3) ~ "matrilineal",
+        var_id == 'EA043' & code %in% c(2,5,6) ~ "cognatic",
+        var_id == 'EA043' & code %in% c(4,7) ~ "other",
         var_id == 'EA042' & code %in% c(7) ~ "int_agr",
         var_id == 'EA042' & code %in% c(5,6,9) ~ "ext_agr",
         var_id == 'EA042' & code %in% c(4) ~ "pastoralism",
@@ -195,49 +192,14 @@ datwo = datw %>%
   map_df(., ~ str_replace(., '^','l_'))
 
 datwc = datw %>% 
-  select(matches('EA(012|015|042|043|053|054|072|073|074|113)'))
+  select(matches('EA(012|015|042|043|053|054|072|073|074|113)')) %>% 
+  mutate_all(fct_infreq) # rerank these to show some consistent pattern: most populous level is highest
 
-# this is a HACK
-datwc = as_tibble(predict(dummyVars(" ~ .", data = datwc), newdata = datwc))
+# turn them into one-hot encoded with no identifiability problems (fullrank does that)
+datwc = as_tibble(predict(dummyVars(" ~ .", fullRank = T, data = datwc), newdata = datwc))
 
 # nice names
-names(datwc) = c(
-  "EA113_Societal_rigidity_F",
-  "EA113_Societal_rigidity_T",
-  "EA012_Marital_residence_with_kin_prevailing_pattern_husband",
-  "EA012_Marital_residence_with_kin_prevailing_pattern_other",
-  "EA012_Marital_residence_with_kin_prevailing_pattern_wife",
-  "EA015_Community_marriage_organization_agamous",
-  "EA015_Community_marriage_organization_endogamous",
-  "EA015_Community_marriage_organization_exogamous",
-  "EA042_Subsistence_economy_dominant_activity_ext_agr",
-  "EA042_Subsistence_economy_dominant_activity_foraging",
-  "EA042_Subsistence_economy_dominant_activity_int_agr",
-  "EA042_Subsistence_economy_dominant_activity_multiple",
-  "EA042_Subsistence_economy_dominant_activity_pastoralism",
-  "EA043_Descent_major_type_other",
-  "EA043_Descent_major_type_patrilineal",
-  "EA053_Sex_differences_animal_husbandry_both",
-  "EA053_Sex_differences_animal_husbandry_mostly_female",
-  "EA053_Sex_differences_animal_husbandry_mostly_male",     
-  "EA053_Sex_differences_animal_husbandry_other",
-  "EA054_Sex_differences_agriculture_both",     
-  "EA054_Sex_differences_agriculture_mostly_female",
-  "EA054_Sex_differences_agriculture_mostly_male",
-  "EA054_Sex_differences_agriculture_other",
-  "EA072_Political_succession_absent",
-  "EA072_Political_succession_matrilineal",
-  "EA072_Political_succession_other",
-  "EA072_Political_succession_patrilineal",
-  "EA073_Political_succession_hereditary_succession_absent",   
-  "EA073_Political_succession_hereditary_succession_matrilineal",
-  "EA073_Political_succession_hereditary_succession_other",
-  "EA073_Political_succession_hereditary_succession_patrilineal",
-  "EA074_Inheritance_rule_for_real_property_land_absent",
-  "EA074_Inheritance_rule_for_real_property_land_matrilineal",
-  "EA074_Inheritance_rule_for_real_property_land_other",
-  "EA074_Inheritance_rule_for_real_property_land_patrilineal"  
-)
+names(datwc) = str_replace(names(datwc), '\\.', '_')
 
 datw2 = datw %>% 
   select(soc_id,in_sccs,EA112_Trance_states) %>% 

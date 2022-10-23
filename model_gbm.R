@@ -82,7 +82,7 @@ gbm_grid1 = h2o.grid("gbm",
                      hyper_params = gbm_params1
 )
 
-h2o.saveGrid(grid_directory = 'grid', grid_id = 'gbm_grid1')
+# h2o.saveGrid(grid_directory = 'grid', grid_id = 'gbm_grid1')
 
 # pick the best models from grid
 gbm_grid_best1 = h2o.getGrid(grid_id = "gbm_grid1",
