@@ -20,13 +20,18 @@ library(tidyverse)
 library(glue)
 library(knitr)
 library(patchwork)
+library(corrplot)
 
 ld = read_tsv('data/dat_long.tsv')
 wd = read_tsv('data/dat_wide.tsv')
+bf = read_tsv('models/bayes_factors.tsv')
+cm1a = read_tsv('models/conf_matrix11model.tsv')
+cm1b = read_tsv('models/conf_matrix11test.tsv')
+varimp1 = read_tsv('models/varimp11.tsv')
 sccs = filter(ld, in_sccs)
 ```
 
-We want to look at two questions. What sort of social factors have been proposed to co-occur with trance and possession phenomena? Using the Ethnographic Atlas and the Standard Cross-Cultural Sample, can we get more confident that these factors do co-occur with such phenomena across cultures?
+We want to look at three questions. What sort of social factors have been proposed to co-occur with trance and possession phenomena? Using the Ethnographic Atlas and the Standard Cross-Cultural Sample, can we get more confident that these factors do co-occur with such phenomena across cultures? Using phylogenetic comparative methods, can we make claims on the causative structure between the co-occurent factors?
 
 ## 1. Trance and possession phenomena have societal covariates in the literature
 
@@ -47,7 +52,7 @@ Some or most groups can feel stuck in a society. If this makes trance and posses
 | Decreased social participation                                | @douglas2004natural      |
 | Social rigidity, monotheism                                                                               | @wood2018complexity      |
 
-Several works made the same point or emphasised various aspects of the same relationship. The above table is somewhat reductive.
+Several works made the same point or emphasised various aspects of the same relationship. The above table is somewhat reductive. The argument is spelt out in the main text.
 
 ## 2. This can be mapped to the Ethnographic Atlas
 
@@ -95,21 +100,23 @@ ld %>%
 
 There are eight types of trance and possession phenomena recorded in the Atlas and a wide set of possible covariates, all with a number of levels (see the Appendix).
 
-The data are challenging in two ways. The variables are themselves correlated, either because they measure different facets of the same thing (like how complex a society is; see the figure below) or because they were adapted together by socially or geographically close societies (Galton's problem). In addition, data are missing from the Atlas in a non-random manner (e.g. if a society is hard to access, it is harder to provide a population size estimate for it).
+The data are challenging in two ways. The variables are themselves correlated, either because they measure different facets of the same thing (like how complex a society is; see the figure below) or because they were adapted together by socially or geographically close societies (Galton's problem). In addition, data are missing from the Atlas in a non-random manner (e.g. if a society is hard to access, it is harder to provide a population size estimate for it). The correlations of the pairwise complete observations of the relevant predictors in the Ethnographic Atlas can be seen below.
 
 ```{r }
-cord = wd %>% 
-  filter(in_sccs) %>% 
-  select(-outcome,-EA112_Trance_states,-trance_present,-possession_present,-possession_trance_present,-soc_id,-in_sccs) %>% 
-  mutate_if(is.logical, as.double)
+cord = ld %>% 
+  filter(!var_title %in% c('Trance states','Societal rigidity')) %>% 
+  select(soc_id,var_title,code) %>%
+  pivot_wider(id_cols = soc_id, names_from = var_title, values_from = code) %>% 
+  select(-soc_id)
 
-# cor(cord,use="pairwise.complete.obs")
+cor(cord,use="pairwise.complete.obs") %>% 
+  corrplot()
 
 ```
 
 We can account for Galton's problem (geographic and cultural co-variation) by restricting our initial data to societies in the Standard Cross-Cultural Sample.
 
-The remaining co-variation and the non-random patterns of missing data recommends an ensemble learning method. This starts with societies with information on trance and possession phenomena and builds a lot of tiny models, using random samples of the data and random subsets of the covariates. Then, we compare these models to assess the overall importance of our covariates. Building little models in parallel is called bagging. This is how a random forest works, growing many classification or regression trees and aggregating over the results. One step further is to train models on the mistakes of the previous models. This is called [boosting](https://www.ibm.com/cloud/learn/boosting) and usually results in higher training and prediction accuracy.
+The remaining co-variation and the non-random patterns of missing data recommend an ensemble learning method. This starts with societies that have information on trance and possession phenomena. It then builds a lot of tiny models, using random samples of the data and random subsets of the covariates. Then, we compare the tiny models with each other to assess the overall importance of our covariates. Building tiny models in parallel is called bagging. This is how a random forest works, growing many classification or regression trees and aggregating over the results. One step further is to train models on the mistakes of the previous models. This is called [boosting](https://www.ibm.com/cloud/learn/boosting) and usually results in higher training and prediction accuracy.
 
 ## 4. Building a boosting model
 
@@ -119,9 +126,9 @@ Gradient boosting is an ensemble learning method which uses decision trees. A de
 
 We only fit the model on societies which (a) have information on whether trance and possession phenomena are present and (b) come from the standard cross-cultural sample.
 
-Following @bourguignon1968, we reduce the complexity of the outcome variable to two levels: whether a society has possession trance or not. The predictors are the possible covariates identified above. Some predictors, like `EA032` (Jurisdictional hierarchy of local community) or `EA113` can be construed to follow a scale. These are input as ordered factors. Others, like `EA053` (Sex differences in animal husbandry) or `EA043` (Major type of descent) can be carved up into categories: These are one-hot encoded. For details, see the Appendix.
+Following @bourguignon1968, we reduce the complexity of the outcome variable to two levels: whether a society has *possession trance* or not. The predictors are the possible covariates identified above. Some predictors, like `EA032` (Jurisdictional hierarchy of local community) or `EA113` can be construed to follow a scale. These are input as *ordered factors*. Others, like `EA053` (Sex differences in animal husbandry) or `EA043` (Major type of descent) can be carved up into categories: These are *one-hot encoded*. For details, see the Appendix.
 
-We use hyperparameter tuning to find the best possible model.  The model is fit on a training set of `length(unique(sccs$soc_id))` societies with information on trance and possession in the standard cross-cultural sample.
+We use *hyperparameter tuning* to find the best possible model.  The model is fit on a training set of `length(unique(sccs$soc_id))` societies with information on trance and possession in the standard cross-cultural sample. The hyperparameter grid is printed in the Appendix. 
 
 ## 5. Results on the training sample
 
@@ -134,10 +141,10 @@ trance %>%
   kable('simple')
 ```
 
-We compare this with how our best model categorises each society. This is our model's confusion matrix. `0` is absence of possession trance, `1` is presence of possession trance. The rows add up to values in the original, the columns are the model's predictions. The last two columns show the error rate.
+We compare training information on each society with how our best model categorises each society. This is our model's confusion matrix. `0` is absence of possession trance, `1` is presence of possession trance. The rows add up to values in the original, the columns are the model's predictions. The last two columns show the error rate. For example, there are 71 societies in the Standard Cross-Cultural Sample that have possession trance, out of these, the model thinks 64 have possession trance and 7 do not (second row). This is an error rate of 7/71=.1.
 
 ```{r }
-cm1a = read_tsv('models/conf_matrix11model.tsv')
+
 cm1a %>% 
   mutate(original = c(names(cm1a)[!names(cm1a) %in% c('Error','Rate')],'Total')) %>% 
   relocate(original) %>% 
@@ -148,19 +155,18 @@ cm1a %>%
 precision = 64 / (64+12)
 recall = 64 / (64+7)
 f = (2 * precision * recall) / (precision + recall)
-chisq.test(c(c(68,12),c(7,64)))
+# chisq.test(c(c(68,12),c(7,64)))
 ```
 
-The model has an F-measure of `r round(f,2)`, with a penalty on slightly overgeneralising possession trance. Though comparisons are hard to make, this is not particularly accurate for a binary categorisation problem. We did expect this, though, as it is unlikely that any complex cultural phenomenon could be reduced to a small number of cross-cultural predictors.
+The model has an F-measure of `r round(f,2)`, with a penalty on slightly overgeneralising possession trance. Though such comparisons are hard to make, this is not particularly accurate for a binary categorisation problem. This is not surprising -- it is unlikely that any complex cultural phenomenon could be reduced to a small number of cross-cultural predictors.
 
 ### 6. Results on the EA data
 
-We can ask the model to make predictions for the entire Ethnographic Atlas (where trance and possession data are available) -- including the SCCS subset. Generally, you want to separate the training and test sets in Machine Learning and not do this, but the 'everything except the SCCS' subset of the Atlas would be an odd test set.
+We can ask the model to make predictions for the entire Ethnographic Atlas (where trance and possession data are available) -- including the Standard Cross-Cultural Sample subset. Generally, you want to separate the training and test sets in Machine Learning and not do this, but the 'everything except the Standard Cross-Cultural Sample' subset of the Atlas would be an odd test set.
 
 Here is the confusion matrix for all `r length(unique(ld$soc_id))` societies in the Atlas where trance and possession information are available:
 
 ```{r }
-cm1b = read_tsv('models/conf_matrix11test.tsv')
 
 cm1b %>% 
   kable('simple')
@@ -173,9 +179,9 @@ f2 = (2 * precision2 * recall2) / (precision2 + recall2)
 chisq.test(c(c(264,113),c(87,194)))
 ```
 
-The F-measue of this model is `r round(f2,2)`. Accuracy here is much worse than for the training data only. That is at least partly because the model is ignorant of the phylogenetic signal which might result in patterns that are unexpected from a purely correlational point of view. However, the model is still more accurate than it would be by chance.
+The F-measue of this model is `r round(f2,2)`. Accuracy here is much worse than for the training data only. That is partly due to model bias and at least partly because the model is ignorant of the phylogenetic signal which might result in patterns that are unexpected from a purely correlational point of view. However, the model is still more accurate than it would be by chance.
 
-We take a look at the variables that were most important in the model in predicting the presence of possession trance in a given society, with a cutoff of 10/47. 
+We now take a look at the variables that were most important in the model itself in predicting the presence of possession trance in a given society, with a cutoff of 10/47. 
 
 ```{r }
 vars = ld %>% 
@@ -189,7 +195,6 @@ vars = ld %>%
   unnest(cols = c(levels)) %>% 
   rename(ID = var_id, Name = var_title)
 
-varimp1 = read_tsv('models/varimp11.tsv')
 vars2 = varimp1 %>% 
   slice(1:10) %>% 
   mutate(ID = str_extract(variable, '^EA...')) %>% 
@@ -201,9 +206,9 @@ vars2 %>% kable(digits = 2, 'simple')
 
 We now look at the direction of these effects (does e.g.\ increased jurisdictional hierarchy go with more or less prevalent possession trance?).
 
-The figure below shows the proportion of societies with possession trance (dark blue) and without (light blue) across the ordered levels of the predictors that the model thinks are important. They come in order of how important they are, according to the model; prevalence of slavery, then family organisation, and so on. The predictor levels are ordered according to coding and generally go from a pattern being less prevalent (top) to more prevalent (bottom):
+The figure below shows the proportion of societies with possession trance (dark blue) and without (light blue) across the ordered levels of the predictors. These are the predictors that the model thinks are important. They come in order of how important they are, according to the model; prevalence of slavery, then family organisation, and so on. The predictor levels are ordered according to coding and generally go from a pattern being less complex or prevalent (top) to more complex or prevalent (bottom). So, for domestic organisation (top right) we go from small nuclear to large extended families. For slavery (top left) we go from absence of slavery to hereditary slavery.
 
-Ee see a clear correlation between the presence of possession trance and the variable scaling up, e.g. societies in which slavery is more prevalent have more possession trance than those where it is less prevalent. The across-level distributions are also interesting, e.g. the main distinction for patterns of slavery is for societies without slavery (first factor level) and all others with some form of slavery (subsequent factor levels).
+We see a clear correlation between the presence of possession trance and the variable scaling up. E.g. societies in which slavery is more prevalent are more likely to have possession trance than those where it is less prevalent. Societies with more complex extended families are more likely to have possession trance. The across-level distributions are also interesting, e.g. the main distinction for patterns of slavery is for societies without slavery (first factor level) and all others with some form of slavery (subsequent factor levels).
 
 ```{r fig.width=10,fig.height=15}
 d_out = ld %>% 
@@ -248,7 +253,35 @@ plots = d_vis %>%
 wrap_plots(plots, ncol = 2) + plot_annotation(caption = 'Dark blue: possession trance present. Light blue: absent.')
 ```
 
-## 7. Summary
+## 7. Did these traits develop independently?
+
+under construction.
+
+slavery. domestic organisation.
+binary.
+austronesian (eeh http://lir.byuh.edu/index.php/pacific/article/view/141)
+afro-asiatic (sub-saharan, greenbaum)
+atlantic-congo (hamito-semitic! lewis)
+
+bayestraits
+
+The independent model assumes the two traits evolve independently, e.g. the transition
+from 0 → 1 in the first trait is independent of the state of the second trait. 
+dependent: the traits are correlated and the rate of change in one
+trait is dependent on the state of the other
+100 stones and 1000
+
+mcmc exp 10 priors
+iterations per stone to estimate the marginal likelihood
+
+bayes factor
+```{r }
+kable(bf, 'simple', digits = 2)
+```
+
+lot of forking paths. slavery in atlantic-congo noteworthy. maybe. overall not really.
+
+## 8. Summary
 
 These results go some way in confirming hypotheses on the cross-cultural correlates of possession trance in the literature. @bourguignon1968 explicitly tests the variables of slavery, jurisdictional hierarchy, settlement patterns, and kin groups. @shaara1992 point to a high value placed on female virginity at marriage, captured here by norms of premarital sexual behaviour for girls, @wood2018complexity point to the role of moralising high gods. These are all important variables in our model. @greenbaum1973 and @shaara1992 point to sexual division of labour but this is not relevant in our model.
 
@@ -269,6 +302,8 @@ This brings us back to the original predictions in the table above.
 |monotheism|@wood2018complexity|yes|
 
 We can predict some types of trance and possession phenomena in the SCCS subset of the EA. Not all of them. Some of the important co-variates are the ones mentioned by earlier work and the direction of the relationships corroborates the literature.
+
+something something phylogenetic comparative methods
 
 Human society is complicated and cross-cultural data have very low resolution. In this sense, we'd be very suspect of a model that would be too accurate of predicting possession trance from societal covariates. It cannot replace fieldwork and more complex explanatory models either. What it can do is provide an extra leg for such explanatory work, which is broadly the recognised ambition of cross-cultural comparative work in evolutionary anthropology.
 
@@ -294,6 +329,18 @@ ld %>%
   distinct(var_id,var_title,var_description,recoded_value) %>% 
   arrange(var_id,recoded_value) %>% 
   kable('simple')
+```
+
+### Hyperparameter values for the Gradient Boosting Model
+
+```{r, echo=T}
+gbm_params1 = list(
+  learn_rate = c(0.01,0.02,0.03,0.1),
+  max_depth = c(1,3,5,7),
+  sample_rate = c(0.4,0.7,0.9,0.95),
+  col_sample_rate = c(0.1,0.2,0.3),
+  min_split_improvement = c(1e-3,1e-5)
+)
 ```
 
 ## References
