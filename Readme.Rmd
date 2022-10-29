@@ -31,15 +31,20 @@ varimp1 = read_tsv('models/varimp11.tsv')
 sccs = filter(ld, in_sccs)
 ```
 
-This is the online supplement for the paper "Possession trance co-varies with measures of social rigidity in the Ethnographic Atlas 2022". The current version of the paper is [here](https://docs.google.com/document/d/1qbcsCeQ-Tw2W-yhQvvYd1Nk5ImQznqWBmiHX09lB_24/edit?usp=sharing).
+# Online supplement: Possession trance co-varies with measures of social rigidity in the Ethnographic Atlas
+
+This is the online supplement for the paper “Possession trance co-varies
+with measures of social rigidity in the Ethnographic Atlas 2022”. The
+current version of the paper is
+[here](https://docs.google.com/document/d/1qbcsCeQ-Tw2W-yhQvvYd1Nk5ImQznqWBmiHX09lB_24/edit?usp=sharing). The `helper` file creates the data files. The `model` files run the Gradient Boosting Model and the Bayestraits model, respectively.
 
 We have three questions. What sort of social factors have been proposed to co-occur with trance and possession phenomena? Can we give support to these using the Ethnographic Atlas and the Standard Cross-Cultural Sample? Using phylogenetic comparative methods, can we make claims on the causative structure between the co-occurrent factors?
 
-Our informal priors are that trance and possession phenomena result from complex interchanges between indidvidual psychopathology and social organisation, and that, even if we can recognise broader patterns, the effects of social rigidity and marginalisation will be idiosyncratic on the ground. This means that both the outcome (trance and possession) and the predictors (e.g. measures of social rigidity) will be much more loosely defined than in similar analyses. So we expect any effects we find to be relatively modest.
+Ee expect any effects we find to be relatively modest. This is because trance and possession phenomena result from complex interchanges between individual psychopathology and social organisation, and that, even if we can recognise broader patterns, the effects of social rigidity and marginalisation will be idiosyncratic on the ground. This means that both the outcome (trance and possession) and the predictors (e.g. measures of social rigidity) will be much more inherently variable than in similar analyses.
 
 ## 1. Trance and possession phenomena have societal covariates in the literature
 
-The paper says that trance induced by possession is not a random, idiosyncratic pathology but a recurrent psycho-social trait that is at least partly motivated by other social factors. This is recurrent claim in the literature. Here, we revisit the main points of this argument.
+The paper says that trance induced by possession is not a random, idiosyncratic pathology but a recurrent psycho-social trait that is at least partly motivated by other social factors. This is recurrent claim in the literature. Here, we revisit the main points of this claim.
 
 High overall social complexity and social rigidity, as well as the resulting power dynamics, might translate to possession trance practices. Such practices might serve to express or relay perceived social inflexibility and inequality. This is echoed in the medical anthropology literature (@during2011critical,@dein2012religion) and ties in with broader questions of inequality and mental health (@nguyen2003anthropology). Various causative models have been proposed to account for the emergence of possession trance, shamanism, and witchcraft in a social setting (@winkelman2015shamanism, @singh2018cultural, @wood2018trance, @singh2021magic).
 
@@ -57,6 +62,12 @@ Some or most groups can feel stuck in a society. If this makes trance and posses
 | Social rigidity, monotheism                                                                               | @wood2018complexity      |
 
 Several works made the same point or emphasised various aspects of the same relationship. The above table is somewhat reductive.
+
+Broadly speaking, we have measures of:
+
+1. Social complexity (including monotheism, which we assume to be more prevalent in more complex societies, see @botero2014ecology)
+2. Social rigidity (including cognatic kinship, which @shaara1992 uses as an example of a more flexible social blueprint)
+3. Social participation, with an emphasis on gender roles in social activites, including work.
 
 ## 2. This can be mapped to the Ethnographic Atlas
 
@@ -98,12 +109,21 @@ trance %>%
 
 What are our predictor variables? The Atlas lists a set of variables that tie in with the observed covariates in the literature. These are either taken literally from @bourguignon1968, @bourguignon1973religion, and @greenbaum1973 or adapt variables used by @wood2018complexity, @shaara1992, @winkelman1986, and @douglas2004natural.
 
-```{r }
-ld %>% 
+Variables 8, 30:33, 66, 68, 70, 72, 73 were lifted from previous work, most notably @bourguignon1968 and @greenbaum1973. In addition, Variables 15, 23, 27, 74, 113 were taken as approximations for social rigidity, while variables 53, 54, 78 for participation, based on the literature above.
+
+```{r eval = F}
+pred_table = ld %>% 
   filter(var_title != 'Trance states') %>% 
   distinct(var_id,var_title,var_definition) %>%
   arrange(var_id) %>% 
-  rename(ID = var_id, Name = var_title, Definition = var_definition) %>% 
+  rename(ID = var_id, Name = var_title, Definition = var_definition)
+
+write_tsv(pred_table, 'data/pred_table_temp.tsv')
+```
+
+```{r }
+pred_table = read_tsv('data/pred_table_added.tsv')
+pred_table %>% 
   kable('simple')
 ```
 
@@ -139,7 +159,7 @@ We only fit the model on societies which (a) have information on whether trance 
 
 The predictors are the possible covariates identified above. Some predictors, like `EA032` (Jurisdictional hierarchy of local community) or `EA113` can be construed to follow a scale. These are input as *ordered factors*. Others, like `EA053` (Sex differences in animal husbandry) or `EA043` (Major type of descent) can be carved up into categories: These are *one-hot encoded*. For details, see the Appendix.
 
-We use *hyperparameter tuning* to find the best possible model.  The model is fit on a training set of `length(unique(sccs$soc_id))` societies with information on trance and possession in the standard cross-cultural sample. The hyperparameter grid is printed in the Appendix. 
+We use *hyperparameter tuning* to find the best possible model.  The model is fit on a training set of `r length(unique(sccs$soc_id))` societies with information on trance and possession in the standard cross-cultural sample. The hyperparameter grid is printed in the Appendix. 
 
 ## 5. Results on the training sample
 
@@ -288,7 +308,7 @@ The phylogenetic comparative analysis concedes with a large number of limitation
 
 ## 8. Summary
 
-The overall results go some way in confirming hypotheses on the cross-cultural correlates of possession trance in the literature. @bourguignon1968 explicitly tests the variables of slavery, jurisdictional hierarchy, settlement patterns, and kin groups. @shaara1992 point to a high value placed on female virginity at marriage, captured here by norms of premarital sexual behaviour for girls, @wood2018complexity point to the role of moralising high gods. These are all important variables in our cross-cultural model. @greenbaum1973 and @shaara1992 point to sexual division of labour but this is not relevant in our model.
+The overall results go some way in confirming hypotheses on the cross-cultural correlates of possession trance in the literature. @bourguignon1968 explicitly tests the variables of domestic organisation slavery, jurisdictional hierarchy, settlement patterns, and kin groups. @shaara1992 point to a high value placed on female virginity at marriage, captured here by norms of premarital sexual behaviour for girls, @wood2018complexity point to the role of moralising high gods. These are all important variables in our cross-cultural model. @greenbaum1973 and @shaara1992 point to sexual division of labour but this is not relevant in our model.
 
 Note that @shaara1992 use cognatic kinship as a proxy of social complexity (which in itself is robustly supported by our model) while the measure referenced by @wood2018complexity, the presence of moralising high gods, has in itself been argued to correlate with social complexity (see @botero2014ecology and @watts2015broad).
 
