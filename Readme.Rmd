@@ -31,13 +31,17 @@ varimp1 = read_tsv('models/varimp11.tsv')
 sccs = filter(ld, in_sccs)
 ```
 
-We want to look at three questions. What sort of social factors have been proposed to co-occur with trance and possession phenomena? Using the Ethnographic Atlas and the Standard Cross-Cultural Sample, can we get more confident that these factors do co-occur with such phenomena across cultures? Using phylogenetic comparative methods, can we make claims on the causative structure between the co-occurent factors?
+This is the online supplement for the paper "Possession trance co-varies with measures of social rigidity in the Ethnographic Atlas 2022". The current version of the paper is [here](https://docs.google.com/document/d/1qbcsCeQ-Tw2W-yhQvvYd1Nk5ImQznqWBmiHX09lB_24/edit?usp=sharing).
+
+We have three questions. What sort of social factors have been proposed to co-occur with trance and possession phenomena? Can we give support to these using the Ethnographic Atlas and the Standard Cross-Cultural Sample? Using phylogenetic comparative methods, can we make claims on the causative structure between the co-occurrent factors?
+
+Our informal priors are that trance and possession phenomena result from complex interchanges between indidvidual psychopathology and social organisation, and that, even if we can recognise broader patterns, the effects of social rigidity and marginalisation will be idiosyncratic on the ground. This means that both the outcome (trance and possession) and the predictors (e.g. measures of social rigidity) will be much more loosely defined than in similar analyses. So we expect any effects we find to be relatively modest.
 
 ## 1. Trance and possession phenomena have societal covariates in the literature
 
-Many people have argued that trance induced by possession is not a random, idiosyncratic pathology but a recurrent psycho-social trait that is at least partly motivated by other social factors. 
+The paper says that trance induced by possession is not a random, idiosyncratic pathology but a recurrent psycho-social trait that is at least partly motivated by other social factors. This is recurrent claim in the literature. Here, we revisit the main points of this argument.
 
-High overall social complexity and social rigidity -- the resulting power dynamics -- might translate to possession trance practices. Such practices might serve to express or relay perceived social inflexibility and inequality. This is echoed in the medical anthropology literature (@during2011critical,@dein2012religion) and ties in with broader questions of inequality and mental health (@nguyen2003anthropology). Various causative models have been proposed to account for the emergence of possession trance and, specifically, shamanism in a social setting (@winkelman2015shamanism, @singh2018cultural, @wood2018trance).
+High overall social complexity and social rigidity, as well as the resulting power dynamics, might translate to possession trance practices. Such practices might serve to express or relay perceived social inflexibility and inequality. This is echoed in the medical anthropology literature (@during2011critical,@dein2012religion) and ties in with broader questions of inequality and mental health (@nguyen2003anthropology). Various causative models have been proposed to account for the emergence of possession trance, shamanism, and witchcraft in a social setting (@winkelman2015shamanism, @singh2018cultural, @wood2018trance, @singh2021magic).
 
 Some or most groups can feel stuck in a society. If this makes trance and possession more likely, we should see correlations between measures of social complexity, organisation, and inequality and possession and trance in cross-cultural data. Many such correlations have been proposed by previous work. Here is a list, cross-referenced with @wood2018complexity:
 
@@ -52,13 +56,13 @@ Some or most groups can feel stuck in a society. If this makes trance and posses
 | Decreased social participation                                | @douglas2004natural      |
 | Social rigidity, monotheism                                                                               | @wood2018complexity      |
 
-Several works made the same point or emphasised various aspects of the same relationship. The above table is somewhat reductive. The argument is spelt out in the main text.
+Several works made the same point or emphasised various aspects of the same relationship. The above table is somewhat reductive.
 
 ## 2. This can be mapped to the Ethnographic Atlas
 
 The use of cross-cultural typological data in general and the Ethnographic Atlas in particular has precedents. @bourguignon1968, @bourguignon1973religion, and @greenbaum1973 use the Ethnographic Atlas to look for correlates of trance and possession trance. @wood2018complexity, @shaara1992, @winkelman1986, and @douglas2004natural build on this research by specifying and compiling their own data sets. The present paper uses the Ethnographic Atlas as made available in the D-Place database, @kirby2016d.
 
-The Atlas records the presence of trance and possession phenomena in a given society, using the following variable (EA112):
+What is our outcome variable? The Atlas records the presence of trance and possession phenomena in a given society, using the following variable (EA112):
 
 ```{r }
 trance = sccs %>% 
@@ -83,9 +87,16 @@ ld %>%
   kable('simple')
 ```
 
-This is basically a truth table of whether possession beliefs or trance states are present in a given society, with some causal links between the two (if possession happens it leads to trance, if trance happens it's because of possession, etc). We can think of different groupings (trance phenomena encompass levels 1,3,4,5,6,7, possession phenomena encompass 2,3,4,5,6,7, specifically possession trance covers 3,4,6,7 but not 1,2,5,8).
+This is basically a truth table of whether possession beliefs or trance states are present in a given society, with some causal links between the two (if possession happens it leads to trance, if trance happens it is because of possession, etc.). We can think of different groupings: trance phenomena encompass levels 1,3,4,5,6,7, possession phenomena encompass 2,3,4,5,6,7, specifically possession trance covers 3,4,6,7 but not 1,2,5,8. Following @bourguignon1968, we reduce the complexity of the outcome variable to two levels: whether a society has *possession trance* or not.
 
-The Atlas lists a set of variables that tie in with the observed covariates in the literature. These are either taken literally from @bourguignon1968, @bourguignon1973religion, and @greenbaum1973 or adapt variables used by @wood2018complexity, @shaara1992, @winkelman1986, and @douglas2004natural.
+```{r }
+trance %>% 
+  group_by(possession_trance) %>% 
+  summarise(count = sum(`n in SCCS`)) %>% 
+  kable('simple')
+```
+
+What are our predictor variables? The Atlas lists a set of variables that tie in with the observed covariates in the literature. These are either taken literally from @bourguignon1968, @bourguignon1973religion, and @greenbaum1973 or adapt variables used by @wood2018complexity, @shaara1992, @winkelman1986, and @douglas2004natural.
 
 ```{r }
 ld %>% 
@@ -96,7 +107,7 @@ ld %>%
   kable('simple')
 ```
 
-## 3. How do we look for correlations between trance and possession and their proposed societal covariates?
+## 3. How do we look for correlations between possession trance and its proposed societal covariates?
 
 There are eight types of trance and possession phenomena recorded in the Atlas and a wide set of possible covariates, all with a number of levels (see the Appendix).
 
@@ -126,20 +137,13 @@ Gradient boosting is an ensemble learning method which uses decision trees. A de
 
 We only fit the model on societies which (a) have information on whether trance and possession phenomena are present and (b) come from the standard cross-cultural sample.
 
-Following @bourguignon1968, we reduce the complexity of the outcome variable to two levels: whether a society has *possession trance* or not. The predictors are the possible covariates identified above. Some predictors, like `EA032` (Jurisdictional hierarchy of local community) or `EA113` can be construed to follow a scale. These are input as *ordered factors*. Others, like `EA053` (Sex differences in animal husbandry) or `EA043` (Major type of descent) can be carved up into categories: These are *one-hot encoded*. For details, see the Appendix.
+The predictors are the possible covariates identified above. Some predictors, like `EA032` (Jurisdictional hierarchy of local community) or `EA113` can be construed to follow a scale. These are input as *ordered factors*. Others, like `EA053` (Sex differences in animal husbandry) or `EA043` (Major type of descent) can be carved up into categories: These are *one-hot encoded*. For details, see the Appendix.
 
 We use *hyperparameter tuning* to find the best possible model.  The model is fit on a training set of `length(unique(sccs$soc_id))` societies with information on trance and possession in the standard cross-cultural sample. The hyperparameter grid is printed in the Appendix. 
 
 ## 5. Results on the training sample
 
-Looking back at the table in the previous section, we see that only about 10% of societies have no trance or possession phenomena. From the rest, a majority have possession trance in some form. Following @bourguignon1968 we can reduce this to a binary: 81 societies have possession trance, 70 have other forms of trance and possessior or show neither.
-
-```{r }
-trance %>% 
-  group_by(possession_trance) %>% 
-  summarise(count = sum(`n in SCCS`)) %>% 
-  kable('simple')
-```
+Looking back at the table in the previous section, we see that only about 10% of societies have no trance or possession phenomena. From the rest, a majority have possession trance in some form. Following @bourguignon1968 we can reduce this to a binary: 81 societies have possession trance, 70 have other forms of trance and possession or show neither.
 
 We compare training information on each society with how our best model categorises each society. This is our model's confusion matrix. `0` is absence of possession trance, `1` is presence of possession trance. The rows add up to values in the original, the columns are the model's predictions. The last two columns show the error rate. For example, there are 71 societies in the Standard Cross-Cultural Sample that have possession trance, out of these, the model thinks 64 have possession trance and 7 do not (second row). This is an error rate of 7/71=.1.
 
@@ -181,7 +185,7 @@ chisq.test(c(c(264,113),c(87,194)))
 
 The F-measue of this model is `r round(f2,2)`. Accuracy here is much worse than for the training data only. That is partly due to model bias and at least partly because the model is ignorant of the phylogenetic signal which might result in patterns that are unexpected from a purely correlational point of view. However, the model is still more accurate than it would be by chance.
 
-We now take a look at the variables that were most important in the model itself in predicting the presence of possession trance in a given society, with a cutoff of 10/47. 
+We now take a look at the variables that were important in the model itself in predicting the presence of possession trance in a given society, with a cutoff of 10/47 most important variables. 
 
 ```{r }
 vars = ld %>% 
@@ -204,7 +208,7 @@ vars2 = varimp1 %>%
 vars2 %>% kable(digits = 2, 'simple')
 ```
 
-We now look at the direction of these effects (does e.g.\ increased jurisdictional hierarchy go with more or less prevalent possession trance?).
+Before we cross-reference the results with the claims in the literature, we look at the direction of these effects (does e.g.\ increased jurisdictional hierarchy go with more or less prevalent possession trance?). Then we ask questions about co-occurrence versus co-evolution.
 
 The figure below shows the proportion of societies with possession trance (dark blue) and without (light blue) across the ordered levels of the predictors. These are the predictors that the model thinks are important. They come in order of how important they are, according to the model; prevalence of slavery, then family organisation, and so on. The predictor levels are ordered according to coding and generally go from a pattern being less complex or prevalent (top) to more complex or prevalent (bottom). So, for domestic organisation (top right) we go from small nuclear to large extended families. For slavery (top left) we go from absence of slavery to hereditary slavery.
 
@@ -255,35 +259,36 @@ wrap_plots(plots, ncol = 2) + plot_annotation(caption = 'Dark blue: possession t
 
 ## 7. Did these traits develop independently?
 
-under construction.
+The literature makes causative claims: societal rigidity causes possession trance (and not the other way round). Cross-cultural correlations can be indicative of causative structure but cannot provide direct evidence for it. 
 
-slavery. domestic organisation.
-binary.
-austronesian (eeh http://lir.byuh.edu/index.php/pacific/article/view/141)
-afro-asiatic (sub-saharan, greenbaum)
-atlantic-congo (hamito-semitic! lewis)
+In addition, we can look at the cultural evolution of the outcome and some of the predictor variables. We take two examples, slavery and domestic organisation. If the practice of slavery leads to possession trance, we expect them to (i) correlate in the ethnographic record (they do) and emerge together in cultural phylogenies. 
 
-bayestraits
+To test for this, we select two predictors, slavery and domestic organisation. These are the two strongest predictors in our cross-cultural analysis. We recode them as binaries to reflect their relationship to prevalence of possession trance: For prevalence of slavery, 1 is any form of slavery present in a cultural group, 0 is no slavery attested. For domestic organisation, 1 is nuclear family organisation, 0 is larger extended family organisation. Our outcome is 1 where possession trance is present and 0 where it is absent.
 
-The independent model assumes the two traits evolve independently, e.g. the transition
-from 0 → 1 in the first trait is independent of the state of the second trait. 
-dependent: the traits are correlated and the rate of change in one
-trait is dependent on the state of the other
-100 stones and 1000
+We select three phylogenies, Austronesian, Afro-Asiatic, and Atlantic-Congo. These are robust phylogenies with a large number of societies in each. They include societies that have been discussed by the trance and possesion literature (@blust2000rat, @greenbaum1973, @boddy1989wombs, @lewis1991introduction).
 
-mcmc exp 10 priors
-iterations per stone to estimate the marginal likelihood
+We use BayesTraits to assess the co-evolution of predictors and outcome (@pagel2007bayestraits). We fit two models, an independent model, which assumes that two traits evolve independently, and a dependent model, which assumes that traits are correlated and the rate of change in one trait. is dependent on the state of the other trait. 
+
+Six dependent and six independent models are fit, for the relationship of (i) possession trance and the presence of slavery, (ii) possession trance and nuclear/extended family organisation across the three phylogenies.
+
+Phylogenies come from D-Place. Societies are matched to phylogenetic trees by language ID-s. One language is used by more than one society in Afro-Asiatic and in Atlantic-Congo respectively, these are removed. Societies that have no data on both traits are pruned from the phylogenetic trees. 
+
+Models are fit using Markov Chain Monte Carlo using exp 10 priors, 100 stepping stones, and 1000 iterations per stone. Each run provides a marginal likelihood for the model fit.
+
+We calculate the Bayes Factors for the more complex dependent versus the less complex independent models. A higher value for a Bayes Factor indicates that the more complex model provides a better fit and so its complexity is justified. The Bayes Factors for the six model comparisons can be seen below.
 
 bayes factor
 ```{r }
 kable(bf, 'simple', digits = 2)
 ```
 
-lot of forking paths. slavery in atlantic-congo noteworthy. maybe. overall not really.
+The results strongly suggest that possession trance and slavery as well as nuclear family organisation developed independently across the three phylogenies. One apparent exception is slavery and possession trance in Afro-Asiatic languages, which of course cover the famed description of possession trance practices in the Sudan and the Horn of Africa. But a Bayes Factor of 4 is not substantial. Overall, there is little evidence here for trait co-evolution.
+
+The phylogenetic comparative analysis concedes with a large number of limitations. It remains true that it does not lend additional support to the cross-cultural analysis.
 
 ## 8. Summary
 
-These results go some way in confirming hypotheses on the cross-cultural correlates of possession trance in the literature. @bourguignon1968 explicitly tests the variables of slavery, jurisdictional hierarchy, settlement patterns, and kin groups. @shaara1992 point to a high value placed on female virginity at marriage, captured here by norms of premarital sexual behaviour for girls, @wood2018complexity point to the role of moralising high gods. These are all important variables in our model. @greenbaum1973 and @shaara1992 point to sexual division of labour but this is not relevant in our model.
+The overall results go some way in confirming hypotheses on the cross-cultural correlates of possession trance in the literature. @bourguignon1968 explicitly tests the variables of slavery, jurisdictional hierarchy, settlement patterns, and kin groups. @shaara1992 point to a high value placed on female virginity at marriage, captured here by norms of premarital sexual behaviour for girls, @wood2018complexity point to the role of moralising high gods. These are all important variables in our cross-cultural model. @greenbaum1973 and @shaara1992 point to sexual division of labour but this is not relevant in our model.
 
 Note that @shaara1992 use cognatic kinship as a proxy of social complexity (which in itself is robustly supported by our model) while the measure referenced by @wood2018complexity, the presence of moralising high gods, has in itself been argued to correlate with social complexity (see @botero2014ecology and @watts2015broad).
 
@@ -301,13 +306,17 @@ This brings us back to the original predictions in the table above.
 |decreased social participation$\rightarrow{}$possession|@douglas2004natural|yes, see above|
 |monotheism|@wood2018complexity|yes|
 
-We can predict some types of trance and possession phenomena in the SCCS subset of the EA. Not all of them. Some of the important co-variates are the ones mentioned by earlier work and the direction of the relationships corroborates the literature.
+We can predict some types of trance and possession phenomena in the Standard Cross-Cultural Sample subset of the Ethnographic Atlas. Not all of them. Some of the important co-variates are the ones mentioned by earlier work and the direction of the relationships corroborates the literature. Phylogenetic comparative methods do not provide additional support to attested cross-cultural co-variation.
 
-something something phylogenetic comparative methods
-
-Human society is complicated and cross-cultural data have very low resolution. In this sense, we'd be very suspect of a model that would be too accurate of predicting possession trance from societal covariates. It cannot replace fieldwork and more complex explanatory models either. What it can do is provide an extra leg for such explanatory work, which is broadly the recognised ambition of cross-cultural comparative work in evolutionary anthropology.
+Human society is complicated and cross-cultural data have very low resolution. In this sense, we'd be suspect of a model that would be too accurate of predicting possession trance from societal covariates. It cannot replace fieldwork and more complex explanatory models. It can provide an extra leg for such explanatory work, which is the recognised ambition of cross-cultural comparative work in evolutionary anthropology.
 
 Our approach is statistically strict, so the fact that it still shows some accuracy is definitely promising for the validity of the connections drawn by previous work on trance and possession phenomena in particular and large cross-cultural comparisons in general.
+
+## 9. Limitations
+
+The cross-cultural model is fit on the Standard Cross-Cultural Sample which does not minimise the phylogenetic signal completely (see [here](https://excd.org/2018/03/01/stats-corner-is-the-standard-cross-cultural-sample-really-standard/)). The data in the Ethnographic Atlas cannot be independently verified. The outcome variable and the predictors are selected and defined with the existing literature in mind. It remains true that these decisions use up a large amount of researcher degrees of freedom. This is especially true for the phylogenetic comparative analysis, which further reduces resolution on the co-varying traits as a starting point. 
+
+Such limitations will be in place for all cross-cultural analyses. They are exacerbated here by the elusiveness of the variables themselves, which likely results in more starting variability baked into the Ethnographic Atlas coding in the first place. The accompanying statistical rigour might render this work relevant to the broader study of trance and possession, despite these limitations.
 
 ## Appendix
 
