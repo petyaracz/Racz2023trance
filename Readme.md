@@ -1,7 +1,9 @@
+# Online supplement: Possession trance co-varies with measures of social rigidity in the Ethnographic Atlas
+
 This is the online supplement for the paper “Possession trance co-varies
 with measures of social rigidity in the Ethnographic Atlas 2022”. The
 current version of the paper is
-[here](https://docs.google.com/document/d/1qbcsCeQ-Tw2W-yhQvvYd1Nk5ImQznqWBmiHX09lB_24/edit?usp=sharing).
+[here](https://docs.google.com/document/d/1qbcsCeQ-Tw2W-yhQvvYd1Nk5ImQznqWBmiHX09lB_24/edit?usp=sharing). The `helper` file creates the data files. The `model` files run the Gradient Boosting Model and the Bayestraits model, respectively.
 
 We have three questions. What sort of social factors have been proposed
 to co-occur with trance and possession phenomena? Can we give support to
