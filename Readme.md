@@ -22,6 +22,10 @@ both the outcome (trance and possession) and the predictors
 (e.g. measures of social rigidity) will be much more inherently variable
 than in similar analyses.
 
+Here is a map of trance and possession phenomena.
+
+![](figures/unnamed-chunk-1-1.png)
+
 ## 1. Trance and possession phenomena have societal covariates in the literature
 
 The paper says that trance induced by possession is not a random,
@@ -163,7 +167,7 @@ provide a population size estimate for it). The correlations of the
 pairwise complete observations of the relevant predictors in the
 Ethnographic Atlas can be seen below.
 
-![](figures/unnamed-chunk-5-1.png)
+![](figures/unnamed-chunk-6-1.png)
 
 We can account for Galton’s problem (geographic and cultural
 co-variation) by restricting our initial data to societies in the
@@ -317,7 +321,7 @@ are also interesting, e.g. the main distinction for patterns of slavery
 is for societies without slavery (first factor level) and all others
 with some form of slavery (subsequent factor levels).
 
-![](figures/unnamed-chunk-9-1.png)
+![](figures/unnamed-chunk-10-1.png)
 
 ## 7. Did these traits develop independently?
 

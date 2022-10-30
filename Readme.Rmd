@@ -21,6 +21,12 @@ library(glue)
 library(knitr)
 library(patchwork)
 library(corrplot)
+library(ggthemes)
+library(ggfortify)
+library(ggmap)
+library(googlesheets4)
+
+mapWorld = map_data('world', wrap=c(-25,335), ylim=c(-55,75)) # pacific centered
 
 ld = read_tsv('data/dat_long.tsv')
 wd = read_tsv('data/dat_wide.tsv')
@@ -41,6 +47,36 @@ current version of the paper is
 We have three questions. What sort of social factors have been proposed to co-occur with trance and possession phenomena? Can we give support to these using the Ethnographic Atlas and the Standard Cross-Cultural Sample? Using phylogenetic comparative methods, can we make claims on the causative structure between the co-occurrent factors?
 
 Ee expect any effects we find to be relatively modest. This is because trance and possession phenomena result from complex interchanges between individual psychopathology and social organisation, and that, even if we can recognise broader patterns, the effects of social rigidity and marginalisation will be idiosyncratic on the ground. This means that both the outcome (trance and possession) and the predictors (e.g. measures of social rigidity) will be much more inherently variable than in similar analyses.
+
+Here is a map of trance and possession phenomena.
+
+```{r fig.width=18, fig.height=5}
+lld = ld %>% 
+  filter(var_id == 'EA112') %>% 
+  mutate(
+    lon2 = ifelse(lon < -20, lon + 360, lon),
+    var_short = case_when(
+      code == 1 ~ 'T',
+      code == 2 ~ 'P',
+      code == 3 ~ 'T,P,T iff P',
+      code == 4 ~ 'T,P,T if P',
+      code == 5 ~ 'T,P,T and P',
+      code == 6 ~ 'P,T if P',
+      code == 7 ~ 'T,P if T',
+      code == 8 ~ 'none'
+    ),
+    coding = fct_reorder(var_name,code)
+  )
+
+p1 = ggplot() + 
+  geom_polygon(data = mapWorld, aes(x=long, y = lat, group = group)) + 
+  geom_label(data = lld, aes(x = lon2, y = lat, colour = coding, label = code)) +
+  theme(axis.title.x=element_blank(), axis.text.x=element_blank(), axis.ticks=element_blank(), axis.title.y=element_blank(), axis.text.y=element_blank()) +
+  scale_colour_viridis_d() +
+  theme_void()
+
+p1 + plot_layout(guides = 'collect')
+```
 
 ## 1. Trance and possession phenomena have societal covariates in the literature
 
@@ -88,13 +124,17 @@ trance = sccs %>%
       fct_relevel('possession trance')
   )
 
-ld %>% 
+table1 = ld %>% 
   filter(var_title == 'Trance states', !is.na(code)) %>% 
   count(code, var_description, name = 'n in EA') %>% 
   left_join(trance) %>% 
   arrange(code) %>% 
   rename(Coding = code, Description = var_description) %>% 
-  select(Coding,Description,possession_trance,`n in EA`,`n in SCCS`) %>% 
+  select(Coding,Description,possession_trance,`n in EA`,`n in SCCS`) 
+
+#write_sheet(table1, ss = 'https://docs.google.com/spreadsheets/d/1X7ZCnw6LVhjLIy4SiSeK3iZ6o1S144iHMv4DqOaCDEU/edit#gid=0', sheet = 'Table 1') 
+
+table1 %>% 
   kable('simple')
 ```
 
@@ -123,6 +163,9 @@ write_tsv(pred_table, 'data/pred_table_temp.tsv')
 
 ```{r }
 pred_table = read_tsv('data/pred_table_added.tsv')
+
+#write_sheet(pred_table, ss = 'https://docs.google.com/spreadsheets/d/1X7ZCnw6LVhjLIy4SiSeK3iZ6o1S144iHMv4DqOaCDEU/edit#gid=0', sheet = 'Table 3')
+
 pred_table %>% 
   kable('simple')
 ```
@@ -169,9 +212,13 @@ We compare training information on each society with how our best model categori
 
 ```{r }
 
-cm1a %>% 
+table4 = cm1a %>% 
   mutate(original = c(names(cm1a)[!names(cm1a) %in% c('Error','Rate')],'Total')) %>% 
-  relocate(original) %>% 
+  relocate(original)
+
+#write_sheet(table4, ss = 'https://docs.google.com/spreadsheets/d/1X7ZCnw6LVhjLIy4SiSeK3iZ6o1S144iHMv4DqOaCDEU/edit#gid=0', sheet = 'Table 4')
+
+table4 %>% 
   kable('simple', digits = 2)
 
 # precision = true 1/tru1 + false 1
@@ -194,6 +241,8 @@ Here is the confusion matrix for all `r length(unique(ld$soc_id))` societies in 
 
 cm1b %>% 
   kable('simple')
+
+#write_sheet(cm1b, ss = 'https://docs.google.com/spreadsheets/d/1X7ZCnw6LVhjLIy4SiSeK3iZ6o1S144iHMv4DqOaCDEU/edit#gid=0', sheet = 'Table 5')
 
 # precision = true 1/true1+false 1
 # recall = true 1/true1 + false0
@@ -224,7 +273,9 @@ vars2 = varimp1 %>%
   mutate(ID = str_extract(variable, '^EA...')) %>% 
   left_join(vars, by = "ID") %>% 
   select(ID, Name, relative_importance)
-  
+
+#write_sheet(vars2, ss = 'https://docs.google.com/spreadsheets/d/1X7ZCnw6LVhjLIy4SiSeK3iZ6o1S144iHMv4DqOaCDEU/edit#gid=0', sheet = 'Table 6')  
+
 vars2 %>% kable(digits = 2, 'simple')
 ```
 
@@ -299,6 +350,7 @@ We calculate the Bayes Factors for the more complex dependent versus the less co
 
 bayes factor
 ```{r }
+#write_sheet(bf, ss = 'https://docs.google.com/spreadsheets/d/1X7ZCnw6LVhjLIy4SiSeK3iZ6o1S144iHMv4DqOaCDEU/edit#gid=0', sheet = 'Table 7')
 kable(bf, 'simple', digits = 2)
 ```
 
