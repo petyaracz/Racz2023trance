@@ -1,19 +1,19 @@
 # Online supplement: Possession trance co-varies with measures of social rigidity in the Ethnographic Atlas
 
-This is the online supplement for the paper “Possession trance co-varies
-with measures of social rigidity in the Ethnographic Atlas 2022”. The
-current version of the paper is
+This is the online supplement for the paper “Possession trance covaries
+with measures of social rigidity in the Ethnographic Atlas”. The current
+version of the paper is
 [here](https://docs.google.com/document/d/1qbcsCeQ-Tw2W-yhQvvYd1Nk5ImQznqWBmiHX09lB_24/edit?usp=sharing).
 The `helper` file creates the data files. The `model` files run the
 Gradient Boosting Model and the Bayestraits model, respectively.
 
 We have three questions. What sort of social factors have been proposed
-to co-occur with trance and possession phenomena? Can we give support to
+to cooccur with trance and possession phenomena? Can we give support to
 these using the Ethnographic Atlas and the Standard Cross-Cultural
 Sample? Using phylogenetic comparative methods, can we make claims on
-the causative structure between the co-occurrent factors?
+the causative structure between the cooccurrent factors?
 
-Ee expect any effects we find to be relatively modest. This is because
+We expect any effects we find to be relatively modest. This is because
 trance and possession phenomena result from complex interchanges between
 individual psychopathology and social organisation, and that, even if we
 can recognise broader patterns, the effects of social rigidity and
@@ -368,7 +368,7 @@ Afro-Asiatic and in Atlantic-Congo respectively, these are removed.
 Societies that have no data on both traits are pruned from the
 phylogenetic trees.
 
-Models are fit using Markov Chain Monte Carlo using exp 10 priors, 100
+Models are fit using Markov Chain Monte Carlo using exp(10) priors, 100
 stepping stones, and 1000 iterations per stone. Each run provides a
 marginal likelihood for the model fit.
 
@@ -707,7 +707,7 @@ Bourguignon, Erika, and Thomas L. Evascu. 1977. “Altered States of
 Consciousness Within a General Evolutionary Perspective: A Holocultural
 Analysis.” *Cross-Cultural Research* 12: 197–216.
 
-Cook, Darren. 2016. *Practical Machine Learning with H2o: Powerful,
+Cook, Darren. 2016. *Practical Machine Learning with H2O: Powerful,
 Scalable Techniques for Deep Learning and AI*. " O’Reilly Media, Inc.".
 
 Dein, Simon, Christopher CH Cook, and Harold Koenig. 2012. “Religion,
