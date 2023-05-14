@@ -5,7 +5,8 @@ with measures of social rigidity in the Ethnographic Atlas”. The current
 version of the paper is
 [here](https://docs.google.com/document/d/1qbcsCeQ-Tw2W-yhQvvYd1Nk5ImQznqWBmiHX09lB_24/edit?usp=sharing).
 The `helper` file creates the data files. The `model` files run the
-Gradient Boosting Model and the Bayestraits model, respectively.
+Gradient Boosting Model, the Generalised Linear Model, and the
+Bayestraits model, respectively.
 
 We have three questions. What sort of social factors have been proposed
 to cooccur with trance and possession phenomena? Can we give support to
@@ -22,9 +23,9 @@ both the outcome (trance and possession) and the predictors
 (e.g. measures of social rigidity) will be much more inherently variable
 than in similar analyses.
 
-Here is a map of trance and possession phenomena.
+Here is a map of trance and possession phenomena in the Atlas.
 
-![](figures/unnamed-chunk-1-1.png)
+![](figures/possession_trance_map-1.png)
 
 ## 1. Trance and possession phenomena have societal covariates in the literature
 
@@ -167,7 +168,7 @@ provide a population size estimate for it). The correlations of the
 pairwise complete observations of the relevant predictors in the
 Ethnographic Atlas can be seen below.
 
-![](figures/unnamed-chunk-6-1.png)
+![](figures/corrplot-1.png)
 
 We can account for Galton’s problem (geographic and cultural
 co-variation) by restricting our initial data to societies in the
@@ -211,7 +212,13 @@ predictors, like `EA032` (Jurisdictional hierarchy of local community)
 or `EA113` can be construed to follow a scale. These are input as
 *ordered factors*. Others, like `EA053` (Sex differences in animal
 husbandry) or `EA043` (Major type of descent) can be carved up into
-categories: These are *one-hot encoded*. For details, see the Appendix.
+categories: These are *one-hot encoded*. So, for `EA043`, this means
+that the category originally has four levels, such as “patrilineal”,
+“matrilineal”, “cognatic”, and “other”, and it will be converted into
+three categories, which are `true` or `false` for patrilineal,
+matrilineal, and cognatic, respectively. If all three categories are
+false, the category has the fourth level, which i “other”. For details,
+see the Appendix.
 
 We use *hyperparameter tuning* to find the best possible model. The
 model is fit on a training set of 151 societies with information on
@@ -331,7 +338,9 @@ are also interesting, e.g. the main distinction for patterns of slavery
 is for societies without slavery (first factor level) and all others
 with some form of slavery (subsequent factor levels).
 
-![](figures/unnamed-chunk-12-1.png)
+![](figures/bigplot-1.png)
+
+### 7. Validating the EA results
 
 Let’s step back for a second. How do we know that these effects are
 present beyond cultural autocorrelation? Our tree model was fit on the
@@ -353,8 +362,9 @@ implementation is one of the less suboptimal ones.
 In the resulting fit, we see that six of the seven predictors have a
 robust effect on the outcome, with a 95% credible interval that excludes
 zero. All of the predictors are ordered categories and sometimes the
-effect is linear, sometimes it’s quadratic, or cubic. The exception is
-premarital sexual norms for girls (EA078).
+effect is linear, sometimes it’s quadratic, or cubic. There is one
+predictor that was deemed important by the boosting model but doesn’t do
+a lot here. This is premarital sexual norms for girls (EA078).
 
 ![Regression
 fig](figures/glm_res.png "Regression coefficients with 90% and 50% credible intervals")
@@ -368,7 +378,12 @@ the main hypothesis of this paper touches on social rigidity more
 generally, questions about one predictor will not necessary sink the
 entire project.
 
-## 7. Did these traits develop independently?
+If anything, the results are promising. Using one set of data and one
+approach, we identified a set of relevant predictors. Using a different
+(larger) set of data and another approach, we confirmed that most of
+these seem to be useful.
+
+### 8. Did these traits develop independently?
 
 The literature makes causative claims: societal rigidity causes
 possession trance (and not the other way round). Cross-cultural
@@ -390,7 +405,8 @@ slavery attested. For domestic organisation, 1 is nuclear family
 organisation, 0 is larger extended family organisation. Our outcome is 1
 where possession trance is present and 0 where it is absent.
 
-We select two phylogenies, Austronesian and Bantu. We use BayesTraits to
+We select two phylogenies, Austronesian (Gray, Drummond, and Greenhill
+(2009)) and Bantu (Grollemund et al. (2015)). We use BayesTraits to
 assess the co-evolution of predictors and outcome (Pagel and Meade
 (2007)). We fit two models, an independent model, which assumes that two
 traits evolve independently, and a dependent model, which assumes that
@@ -417,8 +433,6 @@ indicates that the more complex model provides a better fit and so its
 complexity is justified. The Bayes Factors for the four model
 comparisons can be seen below.
 
-bayes factor
-
 | variable | family | Dependant | Independent |    BF |
 |:---------|:-------|----------:|------------:|------:|
 | dom      | atl    |    -73.25 |      -73.18 | -0.14 |
@@ -435,7 +449,7 @@ The phylogenetic comparative analysis concedes with a large number of
 limitations. It remains true that it does not lend additional support to
 the cross-cultural analysis.
 
-## 8. Summary
+### 9. Summary
 
 The overall results go some way in confirming hypotheses on the
 cross-cultural correlates of possession trance in the literature.
@@ -488,17 +502,20 @@ some accuracy is definitely promising for the validity of the
 connections drawn by previous work on trance and possession phenomena in
 particular and large cross-cultural comparisons in general.
 
-## 9. Limitations
+## 10. Limitations
 
 The cross-cultural model is fit on the Standard Cross-Cultural Sample
-which does not minimise the phylogenetic signal completely (see
-[here](https://excd.org/2018/03/01/stats-corner-is-the-standard-cross-cultural-sample-really-standard/)).
-The data in the Ethnographic Atlas cannot be independently verified. The
-outcome variable and the predictors are selected and defined with the
-existing literature in mind. It remains true that these decisions use up
-a large amount of researcher degrees of freedom. This is especially true
-for the phylogenetic comparative analysis, which further reduces
-resolution on the co-varying traits as a starting point.
+which does not minimise the phylogenetic signal completely (Eff (2004)).
+The data in the Ethnographic Atlas cannot be independently verified,
+though it has some external validity (Bahrami-Rad, Becker, and Henrich
+(2021)). Using a hierarchical model, as we did here, goes some way in
+reducing the phylogenetic signal, but this could be improved in the
+longer term (Claessens and Atkinson (2022)). The outcome variable and
+the predictors are selected and defined with the existing literature in
+mind. It remains true that these decisions use up a large amount of
+researcher degrees of freedom. This is especially true for the
+phylogenetic comparative analysis, which further reduces resolution on
+the co-varying traits as a starting point.
 
 Such limitations will be in place for all cross-cultural analyses. They
 are exacerbated here by the elusiveness of the variables themselves,
@@ -719,6 +736,10 @@ gbm_params1 = list(
 
 ## References
 
+Bahrami-Rad, Duman, Anke Becker, and Joseph Henrich. 2021. “Tabulated
+Nonsense? Testing the Validity of the Ethnographic Atlas.” *Economics
+Letters* 204: 109880.
+
 Botero, Carlos A, Beth Gardner, Kathryn R Kirby, Joseph Bulbulia,
 Michael C Gavin, and Russell D Gray. 2014. “The Ecology of Religious
 Beliefs.” *Proceedings of the National Academy of Sciences* 111 (47):
@@ -733,6 +754,9 @@ Change*. The Ohio State University Press.
 Bourguignon, Erika, and Thomas L. Evascu. 1977. “Altered States of
 Consciousness Within a General Evolutionary Perspective: A Holocultural
 Analysis.” *Cross-Cultural Research* 12: 197–216.
+
+Claessens, Scott, and Quentin Atkinson. 2022. “The Non-Independence of
+Nations and Why It Matters.”
 
 Cook, Darren. 2016. *Practical Machine Learning with H2O: Powerful,
 Scalable Techniques for Deep Learning and AI*. " O’Reilly Media, Inc.".
@@ -751,9 +775,23 @@ Possession Disorders: Etiological, Diagnostic, Therapeutic, and
 Nosological Issues.” *The Canadian Journal of Psychiatry* 56 (4):
 235–42.
 
+Eff, E Anthon. 2004. “Does Mr. Galton Still Have a Problem?
+Autocorrelation in the Standard Cross-Cultural Sample.” *World Cultures*
+15 (2): 153–70.
+
+Gray, Russell D, Alexei J Drummond, and Simon J Greenhill. 2009.
+“Language Phylogenies Reveal Expansion Pulses and Pauses in Pacific
+Settlement.” *Science* 323 (5913): 479–83.
+https://doi.org/<https://doi.org/10.1126/science.1166858>.
+
 Greenbaum, Lenora. 1973. “Societal Correlates of Possession Trance in
 Sub-Saharan Africa.” Edited by Erika Bourguignon. *Religion, Altered
 States of Consciousness, and Social Change*, 39–57.
+
+Grollemund, Rebecca, Simon Branford, Koen Bostoen, Andrew Meade, Chris
+Venditti, and Mark Pagel. 2015. “Bantu Expansion Shows That Habitat
+Alters the Route and Pace of Human Dispersals.” *Proceedings of the
+National Academy of Sciences* 112 (43): 13296–301.
 
 Kirby, Kathryn R, Russell D Gray, Simon J Greenhill, Fiona M Jordan,
 Stephanie Gomes-Ng, Hans-Jörg Bibiko, Damián E Blasi, et al. 2016.
