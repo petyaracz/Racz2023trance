@@ -24,6 +24,7 @@ library(ggthemes)
 library(ggfortify)
 library(ggmap)
 library(googlesheets4)
+library(broom)
 
 mapWorld = map_data('world', wrap=c(-25,335), ylim=c(-55,75)) # pacific centered
 
@@ -33,6 +34,7 @@ bf = read_tsv('models/bayes_factors.tsv')
 cm1a = read_tsv('models/conf_matrix11model.tsv')
 cm1b = read_tsv('models/conf_matrix11test.tsv')
 varimp1 = read_tsv('models/varimp11.tsv')
+glm1 = read_tsv('models/glm_estimates.tsv')
 sccs = filter(ld, in_sccs)
 ```
 
@@ -49,23 +51,13 @@ We expect any effects we find to be relatively modest. This is because trance an
 
 Here is a map of trance and possession phenomena.
 
-```{r fig.width=8, fig.height=9}
+```{r fig.width=8, fig.height=11}
 lld = ld %>% 
   filter(var_id == 'EA112') %>% 
   mutate(
     lon2 = ifelse(lon < -20, lon + 360, lon),
-    var_short = case_when(
-      code == 1 ~ 'trance',
-      code == 2 ~ 'possession',
-      code == 3 ~ 'trance, possession,\ntrance iff possession',
-      code == 4 ~ 'trance, possession,\ntrance if possession',
-      code == 5 ~ 'trance, possession,\ntrance and possession',
-      code == 6 ~ 'possession,\ntrance if possession',
-      code == 7 ~ 'trance,\npossession if trance',
-      code == 8 ~ 'none'
-    ),
     coding = fct_reorder(var_name,code),
-    var_short = fct_reorder(var_short,code)
+    var_description2 = glue('({code}) {var_description}')
   )
 
 p1 = ggplot() + 
@@ -76,7 +68,7 @@ p1 = ggplot() +
   # scale_colour_viridis_d() +
   # guides(colour = 'none',label = 'none') +
   theme_void() +
-  facet_wrap( ~ var_short, nrow = 4)
+  facet_wrap( ~ var_description2, nrow = 4, labeller = label_wrap_gen(width = 60, multi_line = T))
 
 p1
 ```
@@ -229,10 +221,19 @@ table4 %>%
 precision = 64 / (64+12)
 recall = 64 / (64+7)
 f = (2 * precision * recall) / (precision + recall)
-# chisq.test(c(c(68,12),c(7,64)))
 ```
 
 The model has an F-measure of `r round(f,2)`, with a penalty on slightly overgeneralising possession trance. Though such comparisons are hard to make, this is not particularly accurate for a binary categorisation problem. This is not surprising -- it is unlikely that any complex cultural phenomenon could be reduced to a small number of cross-cultural predictors.
+
+We can put a p value on these by using a Chi-squared test:
+
+```{r }
+chisq.test(c(c(68,12),c(7,64))) %>% 
+  tidy() %>% 
+  kable('simple', digits = 2)
+```
+
+The model is above chance in predicting its training data.
 
 ### 6. Results on the EA data
 
@@ -252,10 +253,20 @@ cm1b %>%
 precision2 = 194 / (194+113)
 recall2 = 194 / (194+87)
 f2 = (2 * precision2 * recall2) / (precision2 + recall2)
-chisq.test(c(c(264,113),c(87,194)))
+
 ```
 
 The F-measue of this model is `r round(f2,2)`. Accuracy here is much worse than for the training data only. That is partly due to model bias and at least partly because the model is ignorant of the phylogenetic signal which might result in patterns that are unexpected from a purely correlational point of view. However, the model is still more accurate than it would be by chance.
+
+We can put a p value on these as well by using a Chi-squared test:
+
+```{r }
+chisq.test(c(c(264,113),c(87,194))) %>% 
+  tidy() %>% 
+  kable('simple', digits = 2)
+```
+
+The model is above chance in predicting its test data.
 
 We now take a look at the variables that were important in the model itself in predicting the presence of possession trance in a given society, with a cutoff of 10/47 most important variables. 
 
@@ -288,21 +299,26 @@ The figure below shows the proportion of societies with possession trance (dark 
 
 We see a clear correlation between the presence of possession trance and the variable scaling up. E.g. societies in which slavery is more prevalent are more likely to have possession trance than those where it is less prevalent. Societies with more complex extended families are more likely to have possession trance. The across-level distributions are also interesting, e.g. the main distinction for patterns of slavery is for societies without slavery (first factor level) and all others with some form of slavery (subsequent factor levels).
 
-```{r fig.width=10,fig.height=15}
+```{r fig.width=10,fig.height=16}
 d_out = ld %>% 
   filter(var_id == 'EA112') %>% 
   mutate(
-    possession_trance_present = case_when(
+    `possession trance` = case_when(
       code %in% c(3,4,6,7) ~ 'present',
       code %in% c(1,2,5,8) ~ 'absent'
         )
       ) %>% 
-  select(soc_id,possession_trance_present)
+  select(soc_id,`possession trance`)
 
 d_in = ld %>%
   filter(var_title %in% vars2$Name, !is.na(code)) %>% 
   mutate(
-    predictor = fct_reorder(var_name, -as.double(recoded_value)),
+    recoded_value2 = case_when(
+      var_title == 'Inheritance rule for real property (land)' ~ as.double(code),
+      var_title != 'Inheritance rule for real property (land)' ~ as.double(recoded_value)
+    ),
+    predictor = fct_reorder(var_name, -recoded_value2),
+    inv_value = -as.integer(recoded_value),
     var_title = fct_relevel(var_title, vars2$Name)
     ) %>% 
   select(soc_id,var_definition,var_title,predictor)
@@ -310,17 +326,16 @@ d_in = ld %>%
 d_vis = inner_join(d_in,d_out, by = 'soc_id')
 
 plots = d_vis %>%
-  count(var_title,predictor,possession_trance_present) %>% 
-  # pivot_wider(names_from = possession_trance_present, values_from = n, values_fill = 0) %>% 
-  # mutate(log_odds_pt = log((`TRUE` + 1) / (`FALSE` + 1)) ) %>% 
+  count(var_title,predictor,`possession trance`) %>% 
   group_by(var_title) %>% 
   nest() %>% 
   mutate(
-    plot = map2(var_title, data, ~ ggplot(.y, aes(predictor,n,fill = possession_trance_present)) +
+    plot = map2(var_title, data, ~ 
+                  ggplot(.y, aes(predictor,n,fill = `possession trance`)) +
                   geom_col(position = 'dodge') +
                   theme_bw() +
                   theme(axis.title=element_blank()) +
-                  guides(fill = 'none') +
+                  # guides(fill = 'none') +
                   scale_fill_brewer(palette = "Paired") +
                   ggtitle(str_wrap(.x, width = 25)) +
                   coord_flip()
@@ -328,8 +343,16 @@ plots = d_vis %>%
   ) %>% 
   pull(plot)
   
-wrap_plots(plots, ncol = 2) + plot_annotation(caption = 'Dark blue: possession trance present. Light blue: absent.')
+wrap_plots(plots, ncol = 2) + plot_layout(guides = "collect") & theme(legend.position = 'bottom')
 ```
+
+Let's step back for a second. How do we know that these effects are present beyond cultural autocorrelation? Our tree model was fit on the Standard Cross-Cultural Sample, which attempts to control for cultural autocorrelation. Another thing we can do is fit a model on the Ethnographic Atlas data but account, to some extent, for autocorrelation. This is difficult. We can take the seven best predictors from our tree model. These already account for over 75% of the explained variation. Then, we can take the observations from the Atlas that have data for all seven variables. This is 283/658 societies that have data on possession trance in the first place. We can then fit a Bayesian hierarchical logistic regression model with a grouping factor for geographic region and for language family. There is a trade-off here. If we include more predictor variables, we have fewer societies with complete data. If we use more complex measures to account for autocorrelation, we will eventually overfit the model. This implementation is one of the less suboptimal ones.
+
+In the resulting fit, we see that six of the seven predictors have a robust effect on the outcome, with a 95% credible interval that excludes zero. All of the predictors are ordered categories and sometimes the effect is linear, sometimes it's quadratic, or cubic. The exception is premarital sexual norms for girls (EA078).
+
+![Regression fig](figures/glm_res.png "Regression coefficients with 90% and 50% credible intervals")
+
+Is this because EA078 is a false positive, once we consider autocorrelation in a different way? It is hard to say: Maybe the effect is more robust across all societies, but these will not have data for some or all of the other predictors. Clearly, there are a lot of analytic decisions to make here and there is no optimal solution. Since the main hypothesis of this paper touches on social rigidity more generally, questions about one predictor will not necessary sink the entire project.
 
 ## 7. Did these traits develop independently?
 
@@ -339,17 +362,15 @@ In addition, we can look at the cultural evolution of the outcome and some of th
 
 To test for this, we select two predictors, slavery and domestic organisation. These are the two strongest predictors in our cross-cultural analysis. We recode them as binaries to reflect their relationship to prevalence of possession trance: For prevalence of slavery, 1 is any form of slavery present in a cultural group, 0 is no slavery attested. For domestic organisation, 1 is nuclear family organisation, 0 is larger extended family organisation. Our outcome is 1 where possession trance is present and 0 where it is absent.
 
-We select three phylogenies, Austronesian, Afro-Asiatic, and Atlantic-Congo. These are robust phylogenies with a large number of societies in each. They include societies that have been discussed by the trance and possesion literature (@blust2000rat, @greenbaum1973, @boddy1989wombs, @lewis1991introduction).
+We select two phylogenies, Austronesian and Bantu. We use BayesTraits to assess the co-evolution of predictors and outcome (@pagel2007bayestraits). We fit two models, an independent model, which assumes that two traits evolve independently, and a dependent model, which assumes that traits are correlated and the rate of change in one trait. is dependent on the state of the other trait. 
 
-We use BayesTraits to assess the co-evolution of predictors and outcome (@pagel2007bayestraits). We fit two models, an independent model, which assumes that two traits evolve independently, and a dependent model, which assumes that traits are correlated and the rate of change in one trait. is dependent on the state of the other trait. 
+Four dependent and four independent models are fit, for the relationship of (i) possession trance and the presence of slavery, (ii) possession trance and nuclear/extended family organisation across the three phylogenies.
 
-Six dependent and six independent models are fit, for the relationship of (i) possession trance and the presence of slavery, (ii) possession trance and nuclear/extended family organisation across the three phylogenies.
-
-Phylogenies come from D-Place. Societies are matched to phylogenetic trees by language ID-s. One language is used by more than one society in Afro-Asiatic and in Atlantic-Congo respectively, these are removed. Societies that have no data on both traits are pruned from the phylogenetic trees. 
+Phylogenies come from D-Place which stores these for the original publications. Societies are matched to phylogenetic trees by language ID-s. Societies that have no data on both traits are pruned from the phylogenetic trees. 
 
 Models are fit using Markov Chain Monte Carlo using exp(10) priors, 100 stepping stones, and 1000 iterations per stone. Each run provides a marginal likelihood for the model fit.
 
-We calculate the Bayes Factors for the more complex dependent versus the less complex independent models. A higher value for a Bayes Factor indicates that the more complex model provides a better fit and so its complexity is justified. The Bayes Factors for the six model comparisons can be seen below.
+We calculate the Bayes Factors for the more complex dependent versus the less complex independent models. A higher value for a Bayes Factor indicates that the more complex model provides a better fit and so its complexity is justified. The Bayes Factors for the four model comparisons can be seen below.
 
 bayes factor
 ```{r }
@@ -357,7 +378,7 @@ bayes factor
 kable(bf, 'simple', digits = 2)
 ```
 
-The results strongly suggest that possession trance and slavery as well as nuclear family organisation developed independently across the three phylogenies. One apparent exception is slavery and possession trance in Afro-Asiatic languages, which of course cover the famed description of possession trance practices in the Sudan and the Horn of Africa. But a Bayes Factor of 4 is not substantial. Overall, there is little evidence here for trait co-evolution.
+The results mostly suggest that possession trance and slavery as well as nuclear family organisation developed independently across the two phylogenies. Overall, there is little evidence here for trait co-evolution.
 
 The phylogenetic comparative analysis concedes with a large number of limitations. It remains true that it does not lend additional support to the cross-cultural analysis.
 

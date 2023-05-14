@@ -249,6 +249,14 @@ problem. This is not surprising – it is unlikely that any complex
 cultural phenomenon could be reduced to a small number of cross-cultural
 predictors.
 
+We can put a p value on these by using a Chi-squared test:
+
+| statistic | p.value | parameter | method                                   |
+|----------:|--------:|----------:|:-----------------------------------------|
+|     85.11 |       0 |         3 | Chi-squared test for given probabilities |
+
+The model is above chance in predicting its training data.
+
 ### 6. Results on the EA data
 
 We can ask the model to make predictions for the entire Ethnographic
@@ -266,18 +274,20 @@ trance and possession information are available:
 |                         0 | 264 | 113 |
 |                         1 |  87 | 194 |
 
-    ## 
-    ##  Chi-squared test for given probabilities
-    ## 
-    ## data:  c(c(264, 113), c(87, 194))
-    ## X-squared = 118.11, df = 3, p-value < 2.2e-16
-
 The F-measue of this model is 0.66. Accuracy here is much worse than for
 the training data only. That is partly due to model bias and at least
 partly because the model is ignorant of the phylogenetic signal which
 might result in patterns that are unexpected from a purely correlational
 point of view. However, the model is still more accurate than it would
 be by chance.
+
+We can put a p value on these as well by using a Chi-squared test:
+
+| statistic | p.value | parameter | method                                   |
+|----------:|--------:|----------:|:-----------------------------------------|
+|    118.11 |       0 |         3 | Chi-squared test for given probabilities |
+
+The model is above chance in predicting its test data.
 
 We now take a look at the variables that were important in the model
 itself in predicting the presence of possession trance in a given
@@ -321,7 +331,42 @@ are also interesting, e.g. the main distinction for patterns of slavery
 is for societies without slavery (first factor level) and all others
 with some form of slavery (subsequent factor levels).
 
-![](figures/unnamed-chunk-10-1.png)
+![](figures/unnamed-chunk-12-1.png)
+
+Let’s step back for a second. How do we know that these effects are
+present beyond cultural autocorrelation? Our tree model was fit on the
+Standard Cross-Cultural Sample, which attempts to control for cultural
+autocorrelation. Another thing we can do is fit a model on the
+Ethnographic Atlas data but account, to some extent, for
+autocorrelation. This is difficult. We can take the seven best
+predictors from our tree model. These already account for over 75% of
+the explained variation. Then, we can take the observations from the
+Atlas that have data for all seven variables. This is 283/658 societies
+that have data on possession trance in the first place. We can then fit
+a Bayesian hierarchical logistic regression model with a grouping factor
+for geographic region and for language family. There is a trade-off
+here. If we include more predictor variables, we have fewer societies
+with complete data. If we use more complex measures to account for
+autocorrelation, we will eventually overfit the model. This
+implementation is one of the less suboptimal ones.
+
+In the resulting fit, we see that six of the seven predictors have a
+robust effect on the outcome, with a 95% credible interval that excludes
+zero. All of the predictors are ordered categories and sometimes the
+effect is linear, sometimes it’s quadratic, or cubic. The exception is
+premarital sexual norms for girls (EA078).
+
+![Regression
+fig](figures/glm_res.png "Regression coefficients with 90% and 50% credible intervals")
+
+Is this because EA078 is a false positive, once we consider
+autocorrelation in a different way? It is hard to say: Maybe the effect
+is more robust across all societies, but these will not have data for
+some or all of the other predictors. Clearly, there are a lot of
+analytic decisions to make here and there is no optimal solution. Since
+the main hypothesis of this paper touches on social rigidity more
+generally, questions about one predictor will not necessary sink the
+entire project.
 
 ## 7. Did these traits develop independently?
 
@@ -345,27 +390,21 @@ slavery attested. For domestic organisation, 1 is nuclear family
 organisation, 0 is larger extended family organisation. Our outcome is 1
 where possession trance is present and 0 where it is absent.
 
-We select three phylogenies, Austronesian, Afro-Asiatic, and
-Atlantic-Congo. These are robust phylogenies with a large number of
-societies in each. They include societies that have been discussed by
-the trance and possesion literature (Blust (2000), Greenbaum (1973),
-Boddy (1989), Lewis (1991)).
+We select two phylogenies, Austronesian and Bantu. We use BayesTraits to
+assess the co-evolution of predictors and outcome (Pagel and Meade
+(2007)). We fit two models, an independent model, which assumes that two
+traits evolve independently, and a dependent model, which assumes that
+traits are correlated and the rate of change in one trait. is dependent
+on the state of the other trait.
 
-We use BayesTraits to assess the co-evolution of predictors and outcome
-(Pagel and Meade (2007)). We fit two models, an independent model, which
-assumes that two traits evolve independently, and a dependent model,
-which assumes that traits are correlated and the rate of change in one
-trait. is dependent on the state of the other trait.
-
-Six dependent and six independent models are fit, for the relationship
+Four dependent and four independent models are fit, for the relationship
 of (i) possession trance and the presence of slavery, (ii) possession
 trance and nuclear/extended family organisation across the three
 phylogenies.
 
-Phylogenies come from D-Place. Societies are matched to phylogenetic
-trees by language ID-s. One language is used by more than one society in
-Afro-Asiatic and in Atlantic-Congo respectively, these are removed.
-Societies that have no data on both traits are pruned from the
+Phylogenies come from D-Place which stores these for the original
+publications. Societies are matched to phylogenetic trees by language
+ID-s. Societies that have no data on both traits are pruned from the
 phylogenetic trees.
 
 Models are fit using Markov Chain Monte Carlo using exp(10) priors, 100
@@ -375,27 +414,22 @@ marginal likelihood for the model fit.
 We calculate the Bayes Factors for the more complex dependent versus the
 less complex independent models. A higher value for a Bayes Factor
 indicates that the more complex model provides a better fit and so its
-complexity is justified. The Bayes Factors for the six model comparisons
-can be seen below.
+complexity is justified. The Bayes Factors for the four model
+comparisons can be seen below.
 
 bayes factor
 
-| varible        | family         | bayes_factor |
-|:---------------|:---------------|-------------:|
-| Slavery        | Atlantic-Congo |        -9.68 |
-| Slavery        | Afro-Asiatic   |         4.00 |
-| Slavery        | Austronesian   |        -1.98 |
-| Nuclear family | Atlantic-Congo |        -2.92 |
-| Nuclear family | Afro-Asiatic   |        -1.50 |
-| Nuclear family | Austronesian   |        -1.95 |
+| variable | family | Dependant | Independent |    BF |
+|:---------|:-------|----------:|------------:|------:|
+| dom      | atl    |    -73.25 |      -73.18 | -0.14 |
+| dom      | aut    |    -90.68 |      -87.71 | -5.94 |
+| sl       | atl    |    -76.40 |      -78.13 |  3.47 |
+| sl       | aut    |    -83.06 |      -80.76 | -4.59 |
 
-The results strongly suggest that possession trance and slavery as well
-as nuclear family organisation developed independently across the three
-phylogenies. One apparent exception is slavery and possession trance in
-Afro-Asiatic languages, which of course cover the famed description of
-possession trance practices in the Sudan and the Horn of Africa. But a
-Bayes Factor of 4 is not substantial. Overall, there is little evidence
-here for trait co-evolution.
+The results mostly suggest that possession trance and slavery as well as
+nuclear family organisation developed independently across the two
+phylogenies. Overall, there is little evidence here for trait
+co-evolution.
 
 The phylogenetic comparative analysis concedes with a large number of
 limitations. It remains true that it does not lend additional support to
@@ -685,13 +719,6 @@ gbm_params1 = list(
 
 ## References
 
-Blust, Robert. 2000. “Rat Ears, Tree Ears, Ghost Ears and Thunder Ears
-in Austronesian Languages.” *Bijdragen Tot de Taal-, Land-En
-Volkenkunde* 156 (4): 687–706.
-
-Boddy, Janice. 1989. *Wombs and Alien Spirits: Women, Men, and the Zar
-Cult in Northern Sudan*. Univ of Wisconsin Press.
-
 Botero, Carlos A, Beth Gardner, Kathryn R Kirby, Joseph Bulbulia,
 Michael C Gavin, and Russell D Gray. 2014. “The Ecology of Religious
 Beliefs.” *Proceedings of the National Academy of Sciences* 111 (47):
@@ -732,10 +759,6 @@ Kirby, Kathryn R, Russell D Gray, Simon J Greenhill, Fiona M Jordan,
 Stephanie Gomes-Ng, Hans-Jörg Bibiko, Damián E Blasi, et al. 2016.
 “D-PLACE: A Global Database of Cultural, Linguistic and Environmental
 Diversity.” *PloS One* 11 (7): e0158391.
-
-Lewis, Ioan M. 1991. “Introduction: Zar in Context: The Past, the
-Present and Future of an African Healing Cult.” *Women’s Medicine: The
-Zar-Bori-Cult in Africa and Beyond*, 1–16.
 
 Nguyen, Vinh-Kim, and Karine Peschard. 2003. “Anthropology, Inequality,
 and Disease: A Review.” *Annual Review of Anthropology* 32 (1): 447–74.

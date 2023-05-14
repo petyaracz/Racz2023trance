@@ -1,0 +1,131 @@
+> todo
+> read this
+> read paper
+> read rmd
+> compile
+> push to github; put to do dropbox
+
+We would like to thank the Editor and the Reviewers. Reviewer comments made it clear that (i) we needed to make some of the epistemological uncertainty surrounding "social rigidity" and "possession trance" as unitary social phenomena more explicit, (ii) we needed to better justify the boosting model used in the analysis, and (iii) the phylogenetic comparative analysis was badly implemented and had to be rerun from scratch.
+
+In response, we made considerable edits in the text and in the analyses.
+
+Following suggestions by both reviewers, and, in particular, Reviewer 2, we now spend more time in both the introduction and the discussion on the following question: Whether various measures of social rigidity, complexity, etc. all approximate some abstract standard of inflexibility or gauge different social structures and, correspondingly, whether we can talk about a singular phenomenon of possession trance or a rather a range of related phenomena. Based on cross-cultural data, the answer to these questions is at the very least inconclusive (and more likely a resounding no) -- but this has to be made explicit in the paper itself.
+
+Following suggestions by both reviewers, we now add more details to how the boosting model was implemented and why it was trained on the Standard Cross-Cultural Sample and tested on the Ethnographic Atlas. In order to provide further validation for the model, validation that the reviewers seemed to find welcome, we added a regression model analysis that explicitly controls for geographic and cultural co-variation. We also discuss the benefits and hazards of using such a model versus our boosting approach when working with cross-cultural data of this kind.
+
+Following pointers by Reviewer 2, we repeated the phylogenetic comparative analysis using appropriate standards of model fitting and reporting.
+
+Reviewer 1
+
+Reviewer: I wonder more could be done to mitigate some of the limitations. For example, rather than using the SCCS because it tries to (but does not completely eliminate, as mentioned in the discussion) phylogenetic autocorrelation, why not build a mode that explicitly incorporates phylogenetic co-variance? See Claessens & Atkinson (2022) for examples of how to incorporates this into a regression model (I know that authors here use a decision tree approach, so the models are not directly comparable).
+
+Response: It is clear that the modelling results require more framing and more discussion. We decided to add these in the new draft as well as include a regression analysis to explore other ways in which we could account for autocorrelation. Please find more details below.
+
+Reviewer: The models used, I am not particularly familiar with. I think more contextualising of the model results would help readers understand the contexts further. For example: There is a section on model accuracy. This is an admirable inclusion, and I think perhaps something more people should include. However, there is no way for the reader to determine whether (e.g.) an F-measure of 0.66 is good or not. What level of accuracy should we expect? Is there some independent metric we can call on (like BayesFactors used in the subsequent analyses), or a comparison we can make to understand how well we should expect the model to perform?
+
+Response: We fit a chi squared test of independence on the model's confusion matrix on the training and test data and report the results in the new draft. The chi squared test is more confident on the test data as there are more of these, but it is, broadly speaking, helpful in giving a noise estimate to accompany the signal estimate given by the F measure, precisely as the Reviewer suggested.
+
+Reviewer: A second point in this model for clarification is that the parameters are only derived from the SCCS – is that correct? That is, the results in Table 5 are how well the SCCS model predicts the presence/absence of possession trance in the Ethnographic atlas – but the EA data has no bearing on the parameters of this model (other than the SCCS being a subset of the EA). A similar problem arises with the variable importance. Since the author(s) only perform analyses on the top two most important variables, should we infer that a Relative Importance value of less than 50 is bad? Or is the decision to only analyse the top two variables not driven by data?
+
+Response: The Reviewer is correct, the entire EA dataset is only used to test the boosting model. We now make this clearer at the beginning of the modelling section. We didn't, as such, perform additional analysis on the ten most important variables in the original draft. It is true, however, that we only report the ten most important ones. The 10/47 cutoff in variable importance is arbitrary, although the ten most important variables already account for 91% of the variation explained by the model. We now expand on this detail in the Modelling section. We now also talk more about our choice of a model. The trade-off, as we see it, between a lot-of-tiny-models approach (like our many trees model) and a one-big-model approach (like a regression model) is that a tiny models approach is much better at using all data available, while a big model is much better at handling autocorrelation. We now make this more explicit in our Limitations section. In addition, in the Results section, we now include a validation analysis that uses Bayesian generalized linear regression, following pointers in Claessens & Atkinson (2022). This analysis largely supports the findings of our tiny-models approach and also provides an illustration of why it is difficult to use one large model that has many predictors on a heterogeneous dataset with systematically missing data.
+
+Reviewer: My biggest concern in this paper is the phylogenetic data used in the co-evolution analyses. Three language families are listed: Austronesian, Afro-Asiatic, and Atlantic-Congo. The paper references that these come from D-PLACE, but it would be more appropriate to cite the original source of the phylogenies. My concern is that the authors have used Glottolog taxonomies in their phylogenetic analyses. This is not appropriate because taxonomies have not estimated branch-lengths for the traits to evolve down. You can see within the phylogenetic data files provided that all branch lengths are equal to 1. If the authors think they are justified in using taxonomic data instead of phylogenetic data, then they will need to justify that in the text, but I am unaware of any such argument. My current position is that this analysis is currently unpublishable.
+
+Response: It is safe to say that our grasp on the co-evolution analysis was tenuous. The Reviewer's very specific feedback has ben extremely helpful in rewriting this section. Instead of Glottolog taxonomies, we now use two phylogenies, Austronesian and Atlantic-Congo, as there is no readily available phylogeny for Afro-Asiatic. We cite the original sources of these phylogenies beside D-Place. 
+
+Reviewer: In addition, more information is needed about the Bayestraits analyses. At minimum, we need: How many chains were run? Did the chains converge? How many iterations were there? What was the sampling rate? What were the priors? See Watts et al. for a good example of Bayestraits model description. Looking at the Log output for the models provided, we can see that the models are not performing particularly well, since the ancestral states are all 0.25 in many iterations.
+
+Watts, J., Sheehan, O., Atkinson, Q. D., Bulbulia, J., & Gray, R. D. (2016). Ritual human sacrifice promoted and sustained the evolution of stratified societies. Nature, 532(7598), 228–231. https://doi.org/10.1038/nature17159
+
+Response: In the reanalysis, we report on the number of chains run, number of iterations, sampling rate, priors, and convergence, beyond the Bayes Factors for the hypothesis pairs. We follow the Reviewer's pointers and the example of the Watts paper. The results of the reanalysis are, admittedly, inconclusive, but they could provide a valuable stepping stone for further work, and so are included in the new draft.
+
+Reviewer: Some specific comments as I go through:
+
+-       Figure 1: It would be helpful to label the maps with respect to the numbers in the caption. I find the titles difficult to follow.
+
+Response: We replaced the captions with more informative ones and added numbering.
+
+-       Figure 3: Put colour in the caption or in a legend, rather than a written caption.
+
+Response: Fixed.
+
+-       P17 L17 says that Figure 3 contains proportions, but that cannot be true. The slavery graph has an x-axis that goes to 200.
+
+Response: This was wrong. Corrected to "counts".
+
+-       More information of Bayestraits runs
+o       How many chains, do the chain converge etc.
+o       How many tree samples are used?
+
+Response:  We have reran the analyses using phylogenetic trees instead of glottolog taxonomies and now include this information in the paper.
+
+-       Bayestraits manual lists a BF of > 2 as positive and > 5 as strong, so a BF of 4 seems to be of note?
+
+Response: This is a good point. In our new analysis, we have one model comparison where a BF of four supports the more complex model, and we do speculate on whether this is due to cultural factors.
+
+-       The website linked to Racz (2018) does not exist: https://excd.org/2018/03/01/stats-corner-is-the-standard-cross-cultural-sample-really-standard/R%E1cz
+
+Response: We replaced this with Eff 2004 which is a more exhaustive treatment of the same issue.
+
+-       Although you mention the EA is low resolution,  this paper suggests does contain robust codings.
+
+Bahrami-Rad, D., Becker, A., & Henrich, J. (2021). Tabulated nonsense? Testing the validity of the Ethnographic Atlas. Economics Letters, 204, 109880. https://doi.org/10.1016/j.econlet.2021.109880
+
+Response: This is a brilliant and, to us, very reassuring reference. We added it in our Limitations section (i.e. "the EA might be a bit coarse but probably not too bad").
+
+-       This isn’t a critique, but an interesting output of the independent model that isn’t explored is whether societies tend to gain or lose possession trance in any particular order.
+o For example: once trance arises does it stay or can possession trance come and go?
+o This information is in the Log file of the Bayestraits output. Although, given the comments above, the results are not currently interpretable.
+
+Response: We agree with the Reviewer that this is an interesting path to follow up on. We also think that there is potential in a research paper on the cultural evolution of possession trance. However, we would rather not explore more of this angle in this paper. We feel that we lack the necessary expertise in comparative methods and sufficient experience with either Bantu or Austronesian to give a meaningful intepretation of any results beyond whether traits evolved independently. We are entirely sympathetic to the argument that the phylogenetic analysis in the paper should be either further extended (beyond entailing sufficient reporting detail) or dropped altogther, but we also think that, in its present form, it remains an intriguing addition to the argument without entirely taking over the argument altogether.
+
+Reviewer: 2
+
+Comments to the Author
+Reviewer: For such an exhaustive piece of work I have little to add/suggest- generally this is very clearly described, but some sections could be expanded or expressed in less technical language.
+
+Reviewer: You say that possession trance with social rigidity measures in the title, and then in the abstract you say the association is non-specific(i.e seems general to all social measures you looked at)- these are slightly inconsistent messages I would say. A response might be to say that actually these were not actually non-specific, but rather reflect that the predictors are all measures of social complexity. That is, how do you theorise the relationship between the measures and social complexity- are these distinct factors, or reflections of a single underlying factor. I think in places your report is consistent with each of these in different places.
+
+Response: This is the million dollar question! Maybe it's possible to define a unified measure of social inflexibility and this will always make it more likely that possession trance emerges in a society. Maybe these are what they are: disparate measures of different things that might give rise to different types of trance and possession phenomena. We don't have a good answer here and are not sure if it's possible to give one within the confines of this cross-cultural paper. However, the question itself should be made explicit! We add a paragraph discussing it at the end of the Introduction and briefly speculate on it in the Discussion.
+
+Reviewer: I would refer to the machine learning method in the abstract, given ML is a keyword.
+
+Response: Added.
+
+Review: Could it be better to moderate the first sentence from "comes from the presence" to "seems to come..."? This is consistent with your use of phenomena in the first line f the background, that PT is something which is experienced.
+
+Response: We agree. Fixed.
+
+Reviewer: Could say more about the Seligman 2005 reference on page 4 of the pdf?
+
+Response: Seligman is a very nice example of how a pattern can be recontextualised from psychopathological condition to religious practice and so it is an ideal step forward from strictly biological or pathological framings of possession trance. We now discuss this in more detail in the text.
+
+Reviewer: I think there might be a word missing here:
+
+"These have been largely downplayed by previous work, despite that they can all lead to spurious correlations (Gelman & Hill, 2006)."
+
+Response: Fixed.
+
+Reviewer: I don't think I have come across "truth table" as a terminology before.
+
+Response: Fixed.
+
+Reviewer: Could you expand what is meant by one-hot coding in the MS?
+
+Response: We added an example.
+
+Reviewer: Could you clarify what the purpose of the validation of the model in the EA?
+
+Response: Testing on the Atlas is a straightforward way of introducing the model to previously unseen data and to test its estimates on a larger dataset. Broadly speaking, it lends a lot more credence to the results we garnered from the Sample data. We now make this clear in the text.
+
+Reviewer: Could you clarify what the scale is for relative importance? Is it e.g. a measure of magnitude for coefficients, or precision?
+
+Response: Relative importance, broadly speaking, expresses the rate with which the inclusion of the variable decreases error in the model fitting process. This means that, in theory, a small but robust effect can be as important as a larger but noisier effect. We now make this clear in the text.
+
+Reviewer: At Figure 3- please could you label the bars somewhere?
+
+Response: Added label.
+
+Reviewer: The co-evolution hypothesis is well tested and described, but does not seem well integrated into the Background and Introduction. Could you say something about why answering the second question is important?
+
+Response: The literature makes claims on social rigidity causing possession trance (to put it fairly bluntly). The absence of clear-cut coevolution patterns means that strong, causative claims regarding the effect of social rigidity on the emergence of possession trance do not straightforwardly translate to a cultural evolution account of the phenomenon. This, together with the epistemological uncertainties pointed out by this Reviewer in their first comment, mean that a strong reading of possession trance as a unitary phenomenon caused by very specific social effects is probably untenable. 

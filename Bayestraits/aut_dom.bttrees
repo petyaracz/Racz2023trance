@@ -1,0 +1,147 @@
+#NEXUS
+[R-package APE, Wed May 10 18:21:29 2023]
+
+BEGIN TAXA;
+	DIMENSIONS NTAX = 67;
+	TAXLABELS
+		SquliqAtayal
+		CiuliAtayal
+		CentralAmis
+		Paiwan
+		Bali
+		Javanese
+		OldJavanese
+		Minangkabau
+		MelayuAmbon
+		Iban
+		TobaBatak
+		PhanRangChamEasternCham
+		Moken
+		RotiTermanu_D
+		KeiTanimbarKei
+		Selaru
+		Marquesan
+		Mangareva
+		RapanuiEasterIsland
+		Hawaiian
+		Maori
+		TahitianModern
+		Penrhyn
+		Rarotongan
+		Tuamotu
+		Tuvalu
+		Tokelau
+		Kapingamarangi
+		Luangiua
+		Tikopia
+		UveaEast
+		Niue
+		FutunaEast
+		Samoan
+		Tongan
+		Rotuman
+		MarshalleseE_D
+		Ponapean
+		Chuukese
+		Carolinian
+		SaipanCarolinian
+		ChuukeseAKATrukese
+		Dehu
+		Mota
+		Nahavaq
+		TannaSouthwest
+		Saa
+		Simbo
+		NakanaiBileki_D
+		Maututu
+		Lakalai
+		Wogeo
+		Dobuan
+		Kilivila
+		Motu
+		Mekeo
+		Lamaholot
+		Chamorro
+		Palauan
+		Baree
+		Makassar
+		SubanunSindangan
+		Cebuano
+		Yami
+		KalingaGuinaangLubuagan_D
+		KankanayNorthern
+		Puyuma
+	;
+END;
+BEGIN TREES;
+	TRANSLATE
+		1	SquliqAtayal,
+		2	CiuliAtayal,
+		3	CentralAmis,
+		4	Paiwan,
+		5	Bali,
+		6	Javanese,
+		7	OldJavanese,
+		8	Minangkabau,
+		9	MelayuAmbon,
+		10	Iban,
+		11	TobaBatak,
+		12	PhanRangChamEasternCham,
+		13	Moken,
+		14	RotiTermanu_D,
+		15	KeiTanimbarKei,
+		16	Selaru,
+		17	Marquesan,
+		18	Mangareva,
+		19	RapanuiEasterIsland,
+		20	Hawaiian,
+		21	Maori,
+		22	TahitianModern,
+		23	Penrhyn,
+		24	Rarotongan,
+		25	Tuamotu,
+		26	Tuvalu,
+		27	Tokelau,
+		28	Kapingamarangi,
+		29	Luangiua,
+		30	Tikopia,
+		31	UveaEast,
+		32	Niue,
+		33	FutunaEast,
+		34	Samoan,
+		35	Tongan,
+		36	Rotuman,
+		37	MarshalleseE_D,
+		38	Ponapean,
+		39	Chuukese,
+		40	Carolinian,
+		41	SaipanCarolinian,
+		42	ChuukeseAKATrukese,
+		43	Dehu,
+		44	Mota,
+		45	Nahavaq,
+		46	TannaSouthwest,
+		47	Saa,
+		48	Simbo,
+		49	NakanaiBileki_D,
+		50	Maututu,
+		51	Lakalai,
+		52	Wogeo,
+		53	Dobuan,
+		54	Kilivila,
+		55	Motu,
+		56	Mekeo,
+		57	Lamaholot,
+		58	Chamorro,
+		59	Palauan,
+		60	Baree,
+		61	Makassar,
+		62	SubanunSindangan,
+		63	Cebuano,
+		64	Yami,
+		65	KalingaGuinaangLubuagan_D,
+		66	KankanayNorthern,
+		67	Puyuma
+	;
+	TREE * UNTITLED = [&U] ((1:1.322287,2:1.322287):3.025548,3:4.347834,(4:4.165399,((((5:2.232019,(((6:1.298139,7:0.101472):0.616894,((8:0.455071,9:0.455072):0.086154,10:0.541225):1.373808):0.190116,11:2.105149):0.12687):0.7381,(12:2.41184,13:2.41184):0.558279):1.171189,(((((14:3.457914,15:3.457914,16:3.457913,(((((((((((17:0.670846,18:0.670846):0.001889,19:0.672735):0.758344,((((20:0.316822,21:0.316822,22:0.316822):0.212454,23:0.529276):0.000629,24:0.529905):0,25:0.529905):0.901174):0.006833,(26:1.428512,27:1.428512):0.0094):7.8e-05,((28:0.227085,29:0.227086):0.89108,30:1.118166):0.319824):0.132417,((31:0,32:0):1.376521,33:1.376521):0.193886):0.208589,(34:1.769103,35:1.769103):0.009893):0.57854,36:2.357536):0.221861,(37:1.234216,38:1.234216,((39:0.851541,40:0.851541):0,(41:0.157376,42:0.157376):0.694166):0.382675):1.34518):0.668752,(43:2.906662,((44:2.214222,45:2.214222):0.218719,46:2.432941):0.473722):0.341486,(47:2.644413,48:2.644411):0.603736):0.160211,(((49:0.372685,50:0.372685):0.656649,51:1.029334):0.924901,52:1.954234,((53:1.159411,54:1.159412):0.071928,(55:0.992078,56:0.992078):0.239262):0.722895):1.454125):0.049554):0.089801,57:3.547715):0,58:3.547715,59:3.547715):0.000381,60:3.548096):0.587716,61:4.135812):0.005497):1.2e-05,((62:0.853431,63:0.853429):0.553713,(64:0.830346,(65:0.691171,66:0.691171):0.139176):0.576797):2.734178):0.024078):0.182436,67:4.347834);
+END;

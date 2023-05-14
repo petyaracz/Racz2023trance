@@ -1,0 +1,9 @@
+variable	family	type	run1	run2	run3
+dom	atl	Dependant	-73.253973	-73.329053	-73.230811
+dom	atl	Independent	-73.183908	-73.128445	-73.091275
+dom	aut	Dependant	-90.680724	-90.671321	-90.617218
+dom	aut	Independent	-87.71163	-87.931192	-88.238563
+sl	atl	Dependant	-76.401113	-76.411867	-76.375622
+sl	atl	Independent	-78.134161	-78.114284	-78.196328
+sl	aut	Dependant	-83.06158	-83.151768	-83.2022
+sl	aut	Independent	-80.764208	-80.553423	-80.095201
