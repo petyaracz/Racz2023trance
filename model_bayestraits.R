@@ -1,3 +1,9 @@
+################################################
+# bayestraits helper
+# pracz
+################################################
+
+
 setwd('~/Github/Racz2023trance/')
 library(tidyverse)
 library(glue)
@@ -6,6 +12,20 @@ library(ape)
 library(ggtree)
 library(bayestraitr) # sam passmore's bayestraits helper library
 library(magrittr)
+
+# -- fun -- #
+
+# run bayestraits in the shell using parameters from the runner table return marg lik
+runBSTR = function(run = 'run1', variable = 'sl', family = 'atl', type = 'Independent'){
+  run_string = glue('./Bayestraits/BayesTraitsV4 Bayestraits/{run}/{type}/{family}_{variable}.bttrees Bayestraits/{run}/{type}/{family}_{variable}.btdata < Bayestraits/{type}_runner.txt')
+  out_string = glue('Bayestraits/{run}/{type}/{family}_{variable}.btdata.Stones.txt')
+  
+  system(run_string)
+  stones = bt_read.stones(out_string)
+  marg_lik = stones$marginal_likelihood
+  return(marg_lik)
+}
+
 
 # -- in -- #
 
@@ -17,7 +37,7 @@ dl = read_tsv('data/dat_long.tsv')
 tr_aut = read.nexus("data/aut.bttrees")
 tr_atlc = read.nexus("data/bantu.bttrees")
 
-# taxa
+# taxa from d-place
 tax_aut = read_csv('data/austronesian_taxa.csv') %>% 
   select(taxon,glottocode)
 tax_atlc = read_csv('data/bantu_taxa.csv') %>% 
@@ -30,12 +50,14 @@ tax_atlc = read_csv('data/bantu_taxa.csv') %>%
 
 # -- formatting -- #
 
+# turning preds binary
 dw %<>% 
   mutate(
     slavery_present = EA070_Slavery_type == "l_1",
     domestic_organisation_nuclear = EA008_Domestic_organization %in% c('l_1','l_2')
   )
 
+# converting
 dw2 = dl %>% 
   distinct(soc_id,society,glottocode,family) %>% 
   left_join(dw) %>% 
@@ -43,11 +65,13 @@ dw2 = dl %>%
   mutate_if(is.logical,as.double) %>% 
   mutate_if(is.double,as.character)
 
+# grabbing relevant data
 d_aut = dw2 %>% 
   filter(family == 'Austronesian') %>% 
   left_join(tax_aut) %>% 
   filter(!is.na(taxon)) %>% 
   as.data.frame()
+
 d_atlc = dw2 %>% 
   filter(family == 'Atlantic-Congo') %>% 
   left_join(tax_atlc) %>% 
@@ -74,20 +98,6 @@ bt_write(tree = tr_atlc, data = d_atlc, variables = c('domestic_organisation_nuc
 
 # three runs to check whether they converge
 
-## slavery
-### Atlantic-Congo
-#### independent
-
-runBSTR = function(run = 'run1', variable = 'sl', family = 'atl', type = 'Independent'){
-  run_string = glue('./Bayestraits/BayesTraitsV4 Bayestraits/{run}/{type}/{family}_{variable}.bttrees Bayestraits/{run}/{type}/{family}_{variable}.btdata < Bayestraits/{type}_runner.txt')
-  out_string = glue('Bayestraits/{run}/{type}/{family}_{variable}.btdata.Stones.txt')
-  
-  system(run_string)
-  stones = bt_read.stones(out_string)
-  marg_lik = stones$marginal_likelihood
-  return(marg_lik)
-}
-
 runner = crossing(
   run = c('run1','run2','run3'),
   variable = c('sl','dom'),
@@ -95,7 +105,8 @@ runner = crossing(
   type = c('Independent','Dependant')
 )
 
-# marg_liks = pmap_dbl(runner, runBSTR)
+# this takes a while partner:
+marg_liks = pmap_dbl(runner, runBSTR)
 
 runner$marginal_likelihoods = marg_liks
 

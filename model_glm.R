@@ -1,5 +1,6 @@
 ################################################
 # glm
+# pracz
 ################################################
 
 set.seed(1337)
@@ -32,7 +33,8 @@ vars %<>%
 # grouping factors
 dl %<>% 
   distinct(soc_id,family,region)
-# sort out factor order, add grouping factors
+
+# sort out factor order, drop non-complete cases, add grouping factors
 dw %<>% 
   select(all_of(c('soc_id','possession_trance_present',vars))) %>% 
   left_join(dl) %>% 
@@ -56,12 +58,11 @@ fit1 = stan_glmer(possession_trance_present ~ 1 +
                     (1|family) +
                     (1|region), family = binomial, data = dw2, cores = 8, chains = 8, iter = 2000)
 
+# -- save everything -- #
+
 plot(fit1, regex_pars = 'EA')
 ggsave('figures/glm_res.png', width = 8, height = 6)
 plot(fit1, "dens_overlay", pars = "(Intercept)")
 plot(fit1, 'rhat')
 broom.mixed::tidy(fit1, conf.int = T, conf.level = .95) %>% 
   write_tsv('models/glm_estimates.tsv')
-
-# -- pred -- #
-
