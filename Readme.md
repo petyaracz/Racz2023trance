@@ -1,5 +1,7 @@
 # Online supplement: Possession trance co-varies with measures of social rigidity in the Ethnographic Atlas
 
+[![DOI](https://zenodo.org/badge/506949064.svg)](https://zenodo.org/badge/latestdoi/506949064)
+
 This is the online supplement for the paper “Possession trance covaries
 with measures of social rigidity in the Ethnographic Atlas”.
 The `helper` file creates the data files. The `model` files run the
