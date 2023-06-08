@@ -1,9 +1,7 @@
 # Online supplement: Possession trance co-varies with measures of social rigidity in the Ethnographic Atlas
 
 This is the online supplement for the paper “Possession trance covaries
-with measures of social rigidity in the Ethnographic Atlas”. The current
-version of the paper is
-[here](https://docs.google.com/document/d/1qbcsCeQ-Tw2W-yhQvvYd1Nk5ImQznqWBmiHX09lB_24/edit?usp=sharing).
+with measures of social rigidity in the Ethnographic Atlas”.
 The `helper` file creates the data files. The `model` files run the
 Gradient Boosting Model, the Generalised Linear Model, and the
 Bayestraits model, respectively.
